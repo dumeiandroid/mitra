@@ -115,7 +115,7 @@
 
             <section id="statusBanner" class="hidden mb-8"></section>
 
-            <section id="statCardsSection" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
                     <div>
                         <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Kuota Kupon Tes</p>
@@ -147,7 +147,7 @@
             </section>
 
             <div class="flex flex-wrap items-center gap-3 mb-8">
-                <button id="btnRegistrasiPeserta" onclick="toggleModal('addPesertaModal')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-3 rounded-lg shadow-sm flex items-center gap-2 transition duration-200 text-sm">
+                <button onclick="toggleModal('addPesertaModal')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-3 rounded-lg shadow-sm flex items-center gap-2 transition duration-200 text-sm">
                     <i class="fa-solid fa-address-card"></i>
                     Registrasi Peserta & Terbitkan Tautan Ujian
                 </button>
@@ -157,7 +157,7 @@
                 </button>
             </div>
 
-            <div id="mainContentGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                 <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
                     <div class="p-5 border-b border-gray-200 bg-gray-50/50 flex items-center justify-between gap-3 flex-wrap">
@@ -232,7 +232,7 @@
             </div>
 
             <!-- MATRIKS AGENDA PENGUJIAN MANDIRI -->
-            <div id="agendaSection" class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mt-8">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mt-8">
                 <div class="mb-4 flex items-center justify-between flex-wrap gap-3">
                     <div>
                         <h2 class="font-bold text-gray-900 flex items-center gap-2">
@@ -481,32 +481,13 @@
 
         function renderStatusBanner() {
             const banner = document.getElementById('statusBanner');
-            const belumAktif = currentMitra.x_04 !== 'aktif';
-
-            // Bagian yang hanya boleh tampil setelah akun diaktifkan Admin
-            const statCards = document.getElementById('statCardsSection');
-            const btnRegistrasi = document.getElementById('btnRegistrasiPeserta');
-            const mainGrid = document.getElementById('mainContentGrid');
-            const agendaSection = document.getElementById('agendaSection');
-
-            if (belumAktif) {
+            if (currentMitra.x_04 !== 'aktif') {
                 banner.innerHTML = `<div class="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl text-xs text-rose-800">
-                    <strong>Akun Anda berstatus "${currentMitra.x_04}".</strong> Sebagian fitur (registrasi peserta, kupon, dan pemantauan) masih dibatasi hingga akun diaktifkan oleh Admin.
-                    Selagi menunggu, silakan pelajari terlebih dahulu Kebijakan &amp; Kode Etik di atas serta Panduan Pembacaan Instruksi di bawah ini.
+                    <strong>Akun Anda berstatus "${currentMitra.x_04}".</strong> Sebagian fitur mungkin dibatasi hingga akun diaktifkan oleh Admin.
                 </div>`;
                 banner.classList.remove('hidden');
-
-                statCards.classList.add('hidden');
-                btnRegistrasi.classList.add('hidden');
-                mainGrid.classList.add('hidden');
-                agendaSection.classList.add('hidden');
             } else {
                 banner.classList.add('hidden');
-
-                statCards.classList.remove('hidden');
-                btnRegistrasi.classList.remove('hidden');
-                mainGrid.classList.remove('hidden');
-                agendaSection.classList.remove('hidden');
             }
         }
 

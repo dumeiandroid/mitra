@@ -907,29 +907,6 @@ async function loginDenganTokenMain() {
     }
     // ── Cek apakah biodata sudah terisi (field 'nama') ──
     let bioCek = {}; try { bioCek = JSON.parse(cu.x_02 || '{}'); } catch {}
-
-    // ── KOMPATIBILITAS dengan peserta yang didaftarkan lewat mitra-dashboard.html ──
-    // (lihat komentar lengkap di window.onload — skema field bioNama/bioUsia/dst
-    // dinormalisasi ke skema internal index.html: nama/usia/dst).
-    if (!bioCek.nama && bioCek.bioNama) {
-      bioCek = {
-        ...bioCek,
-        nama: bioCek.bioNama,
-        usia: bioCek.bioUsia || '',
-        pendidikan: bioCek.bioPend || '',
-        sekolah: bioCek.bioSekolah || '',
-        kota: bioCek.bioKota || '',
-        jenis_kelamin: bioCek.bioGender || '',
-        gender: bioCek.bioGender || '',
-        telepon: bioCek.bioTelp || '',
-        status: bioCek.status || (IS_AUTO_AKTIF ? 'aktif' : 'nonaktif'),
-      };
-      try {
-        await aP(cu.id_x, { x_02: JSON.stringify(bioCek) });
-        cu.x_02 = JSON.stringify(bioCek);
-      } catch (e) { console.warn('[NORMALIZE] Gagal menyimpan normalisasi biodata mitra:', e); }
-    }
-
     // Cek status logout SEGERA setelah login berhasil — tidak peduli biodata sudah diisi atau belum
     cekTombolLogout(bioCek.logout === true);
     if (!bioCek.nama) {
@@ -2788,35 +2765,6 @@ window.onload = async () => {
 
       // ── Cek apakah biodata sudah terisi (field 'nama') ──
       let bioCekR = {}; try { bioCekR = JSON.parse(cu.x_02 || '{}'); } catch {}
-
-      // ── KOMPATIBILITAS dengan peserta yang didaftarkan lewat mitra-dashboard.html ──
-      // mitra-dashboard.html menyimpan biodata dengan skema field BERBEDA (bioNama, bioUsia,
-      // bioPend, bioSekolah, bioKota, bioGender, bioTelp) dibanding skema internal index.html
-      // sendiri (nama, usia, pendidikan, jenis_kelamin/gender, telepon, status). Akibatnya cek
-      // "!bioCekR.nama" di bawah selalu gagal untuk peserta yang didaftarkan mitra, sehingga
-      // form biodata selalu disuruh isi ulang padahal datanya sudah ada.
-      // Kalau field "nama" belum ada TAPI "bioNama" sudah ada → peserta ini sudah didaftarkan
-      // mitra, normalisasi field-nya di sini (field bioXxx asli TETAP disimpan, tidak dihapus,
-      // supaya mitra-dashboard.html tetap bisa membacanya untuk Pemantauan Progres Peserta).
-      if (!bioCekR.nama && bioCekR.bioNama) {
-        bioCekR = {
-          ...bioCekR,
-          nama: bioCekR.bioNama,
-          usia: bioCekR.bioUsia || '',
-          pendidikan: bioCekR.bioPend || '',
-          sekolah: bioCekR.bioSekolah || '',
-          kota: bioCekR.bioKota || '',
-          jenis_kelamin: bioCekR.bioGender || '',
-          gender: bioCekR.bioGender || '',
-          telepon: bioCekR.bioTelp || '',
-          status: bioCekR.status || (IS_AUTO_AKTIF ? 'aktif' : 'nonaktif'),
-        };
-        try {
-          await aP(cu.id_x, { x_02: JSON.stringify(bioCekR) });
-          cu.x_02 = JSON.stringify(bioCekR);
-        } catch (e) { console.warn('[NORMALIZE] Gagal menyimpan normalisasi biodata mitra:', e); }
-      }
-
       // Cek status logout SEGERA setelah login berhasil — tidak peduli biodata sudah diisi atau belum
       cekTombolLogout(bioCekR.logout === true);
       if (!bioCekR.nama) {
@@ -2826,20 +2774,6 @@ window.onload = async () => {
         ss('screenDaftar');
         $('tokenLoginBox').style.display = 'none';
         $('biodataContainer').style.display = 'block';
-        return;
-      }
-
-      // Biodata sudah ada tapi SELFIE belum → arahkan langsung ke kamera selfie,
-      // BUKAN langsung ke tes (selfie tetap wajib). Kasus paling umum: peserta yang
-      // didaftarkan lewat mitra-dashboard.html — biodatanya sudah lengkap, tapi belum
-      // pernah difoto selfie karena mitra-dashboard.html tidak punya form/kamera selfie.
-      if (!bioCekR.foto_selfie) {
-        hl();
-        _updateExistingId = String(cu.id_x);
-        _pendingBio = bioCekR;
-        tampilTopBarId();
-        $('tokenLoginBox').style.display = 'none';
-        bukaKameraSelfie();
         return;
       }
 

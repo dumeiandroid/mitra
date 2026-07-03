@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Kendali Pusat Admin - PT Lidan Indah Abadi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!--
+        SKEMA DATA (lihat pendaftaran-mitra.html & mitra-dashboard.html)
+        Tabel admins: x_01 = username, x_02 = password
+        Tabel mitra_member: x_01 username, x_02 password, x_03 json{nama_lengkap,whatsapp,email},
+                             x_04 status(pending/aktif/nonaktif), x_05 sisa_kupon, x_06 total_kupon_diterima,
+                             x_07 json array pesanan_kupon: [{id,paket_id,nama_paket,jumlah_kupon,harga,status,tanggal_pesan,tanggal_approve,catatan_admin}]
+                             status pesanan: "menunggu_approval" | "disetujui" | "ditolak"
+        Tabel client_mitra: x_01 = token_ujian, format: [namaDepanPeserta][2 huruf/angka acak][id_x]
+                             (contoh "budixy245", dibuat di mitra-dashboard.html setelah id_x terbentuk),
+                             x_02 = JSON blob SEMUA data peserta (key sama seperti biodata-ssc.html): {bioNama, bioUsia, bioPend, bioSekolah, bioKota, bioGender, bioTelp,
+                             tanggal_daftar (ISO), tanggal_tes (YYYY-MM-DD), status_tes, tanggal_selesai (ISO),
+                             catatan_validasi}, x_18 = id_mitra (FK, kolom terpisah supaya bisa difilter x_18_eq).
+                             x_04/x_05/x_06/x_07/x_08/x_09 TIDAK DIPAKAI LAGI.
+    -->
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+    <!-- ================= LOGIN GATE ================= -->
+    <div id="loginGate" class="min-h-screen flex items-center justify-center p-4">
+        <div class="max-w-sm w-full bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="bg-slate-900 text-white p-2 rounded-lg font-black text-lg tracking-wider">LIDAN</div>
+                <div>
+                    <h1 class="text-sm font-bold text-gray-900 tracking-wide uppercase">Pusat Kendali Admin</h1>
+                    <p class="text-xs text-gray-500">PT Lidan Indah Abadi</p>
+                </div>
+            </div>
+
+            <div id="loginError" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3 py-2 rounded-lg mb-4"></div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Username Admin</label>
+                    <input id="loginUser" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-slate-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Kata Sandi</label>
+                    <input id="loginPass" type="password" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-slate-500">
+                </div>
+                <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-500">
+                    <input id="loginRemember" type="checkbox" class="rounded border-gray-300 text-slate-700 focus:ring-slate-500">
+                    Ingat saya di perangkat ini
+                </label>
+                <button id="loginBtn" type="submit" class="w-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white font-bold py-3 rounded-lg text-sm shadow transition duration-200">
+                    Masuk Sebagai Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= APP SHELL ================= -->
+    <div id="appShell" class="hidden">
+
+        <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg font-black text-lg tracking-wider">LIDAN</div>
+                    <div>
+                        <h1 class="text-sm font-bold tracking-wide uppercase">Pusat Kendali Administrasi</h1>
+                        <p class="text-[10px] text-slate-400">Sistem Manajemen Kemitraan & Validasi Psikodiagnostik</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                        <i class="fa-solid fa-user-shield text-amber-400 text-sm"></i>
+                        <span class="text-xs font-semibold" id="adminName">Administrator</span>
+                    </div>
+                    <button onclick="logout()" class="text-slate-400 hover:text-rose-400 text-sm px-2" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Mitra Aktif</p>
+                        <p class="text-2xl font-bold text-slate-900 mt-1"><span id="mTotalMitra">0</span> <span class="text-xs font-normal text-gray-500">Akun</span></p>
+                    </div>
+                    <div class="p-3 bg-slate-100 rounded-lg text-slate-700 hidden sm:block"><i class="fa-solid fa-id-card-alt text-xl"></i></div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Akumulasi Peserta</p>
+                        <p class="text-2xl font-bold text-indigo-600 mt-1"><span id="mTotalPeserta">0</span> <span class="text-xs font-normal text-gray-500">Orang</span></p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600 hidden sm:block"><i class="fa-solid fa-users text-xl"></i></div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Antrean Validasi</p>
+                        <p class="text-2xl font-bold text-amber-600 mt-1"><span id="mAntrean">0</span> <span class="text-xs font-normal text-gray-500">Berkas</span></p>
+                    </div>
+                    <div class="p-3 bg-amber-50 rounded-lg text-amber-600 hidden sm:block"><i class="fa-solid fa-file-medical text-xl"></i></div>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Kupon Terdistribusi</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><span id="mKupon">0</span> <span class="text-xs font-normal text-gray-500">Unit</span></p>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600 hidden sm:block"><i class="fa-solid fa-receipt text-xl"></i></div>
+                </div>
+            </section>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+                <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-bold text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-indigo-500"></i>
+                            Matriks Agenda Pengujian Mandiri
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Tanggal yang ditandai memiliki jadwal tes yang didaftarkan mitra. Klik tanggal untuk melihat detail agenda.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="shiftAgendaMonth(-1)" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <span id="agendaMonthLabel" class="text-sm font-bold text-gray-800 w-32 text-center">-</span>
+                        <button onclick="shiftAgendaMonth(1)" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-100"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        <button onclick="shiftAgendaMonth(0, true)" class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 px-2">Hari Ini</button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                        <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+                    </div>
+                    <div id="agendaCalendarGrid" class="grid grid-cols-7 gap-1.5"></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="font-bold text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-folder-tree text-indigo-500"></i>
+                            Direktori Data Kemitraan & Afiliasi Peserta Tes
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Pemantauan silang kuota kupon aset, nama peserta di bawah mitra, dan status berkas psikodiagnostik.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="searchMitra" type="text" placeholder="Cari nama mitra/peserta..." class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500 w-full sm:w-64">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-600 uppercase text-[11px] tracking-wider border-b border-gray-200">
+                                <th class="py-3 px-4 font-semibold">Informasi Utama Mitra</th>
+                                <th class="py-3 px-4 font-semibold">Sisa Aset Kupon</th>
+                                <th class="py-3 px-4 font-semibold">Peserta Terbimbing</th>
+                                <th class="py-3 px-4 font-semibold">Status Validasi Berkas Terakhir</th>
+                                <th class="py-3 px-4 font-semibold text-center">Tindakan Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mitraTableBody" class="divide-y divide-gray-200">
+                            <tr><td colspan="5" class="py-8 text-center text-gray-400 text-sm">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
+                    <div id="paginationInfo">Menampilkan 0 dari 0 data mitra terdaftar</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL: KELOLA MITRA -->
+    <div id="manageModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+                <h3 class="font-bold text-gray-900 text-base" id="manageMitraName">Kelola Mitra</h3>
+                <button onclick="toggleModal('manageModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 text-sm">
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <button id="btnToggleActive" onclick="toggleMitraStatus()" class="text-xs font-bold px-3 py-2 rounded-lg shadow-sm transition"></button>
+                    <div class="flex items-center gap-2">
+                        <input id="kuponInput" type="number" min="1" placeholder="Jumlah" class="border border-gray-300 rounded-lg px-3 py-2 text-xs w-24 focus:outline-none focus:border-indigo-500">
+                        <button onclick="tambahKupon()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm transition">
+                            <i class="fa-solid fa-plus"></i> Tambah Kupon
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-2">Pesanan Kupon</h4>
+                    <div id="managePesananList" class="space-y-2"></div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-2">Daftar Peserta</h4>
+                    <div id="managePesertaList" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DETAIL AGENDA HARIAN -->
+    <div id="agendaDayModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-lg w-full max-h-[80vh] flex flex-col overflow-hidden">
+            <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+                <h3 class="font-bold text-gray-900 text-base" id="agendaDayTitle">Agenda Tanggal</h3>
+                <button onclick="toggleModal('agendaDayModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-2 text-sm" id="agendaDayList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://lidan-co-id.pages.dev/api/contacts_filter_dinamis6';
+        const T_MITRA = 'mitra_member';
+        const T_PESERTA = 'client_mitra';
+        const T_ADMIN = 'admins';
+        const SESSION_KEY = 'lidanAdminSession';
+
+        let mitraData = [];
+        let pesertaData = [];
+        let pesertaByMitra = {};
+        let activeMitraId = null;
+
+        async function apiRequest(table, { method = 'GET', id = null, action = null, body = null, query = {}, roleHeader = null } = {}) {
+            let url = `${API_BASE}?table=${table}`;
+            if (id) url += `&id_x=${id}`;
+            if (action) url += `&action=${action}`;
+            for (const k in query) url += `&${k}=${encodeURIComponent(query[k])}`;
+            const headers = { 'Content-Type': 'application/json', 'X-Custom-Auth': 'admin' };
+            if (roleHeader) headers['X-Role'] = roleHeader;
+            const opts = { method, headers };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(url, opts);
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok || data.success === false) throw new Error(data.message || data.error || 'Permintaan gagal.');
+            return data;
+        }
+
+        function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+        function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+        function pesertaBio(p) {
+            try { return JSON.parse((p && p.x_02) || '{}'); } catch (e) { return {}; }
+        }
+
+        function statusLabel(status) {
+            const map = {
+                belum_tes: { text: 'Belum Tes', cls: 'text-amber-500' },
+                sedang_tes: { text: 'Sedang Tes', cls: 'text-blue-500' },
+                selesai_ujian: { text: 'Selesai Ujian', cls: 'text-orange-500' },
+                selesai_terkirim: { text: 'Selesai Terkirim', cls: 'text-emerald-500' }
+            };
+            return map[status] || { text: status || '-', cls: 'text-gray-400' };
+        }
+
+        function mitraDetail(m) {
+            try { return JSON.parse(m.x_03 || '{}'); } catch (e) { return {}; }
+        }
+
+        function mitraPesanan(m) {
+            try { return JSON.parse(m.x_07 || '[]'); } catch (e) { return []; }
+        }
+
+        function formatRupiah(n) {
+            return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+        }
+
+        function pesananStatusLabel(status) {
+            const map = {
+                menunggu_approval: { text: 'Menunggu Persetujuan', cls: 'bg-amber-50 text-amber-700 border-amber-200' },
+                disetujui: { text: 'Disetujui', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+                ditolak: { text: 'Ditolak', cls: 'bg-rose-50 text-rose-700 border-rose-200' }
+            };
+            return map[status] || { text: status, cls: 'bg-gray-50 text-gray-600 border-gray-200' };
+        }
+
+        // ============ LOAD & RENDER ============
+        async function loadAllData() {
+            const [mitraRes, pesertaRes] = await Promise.all([
+                apiRequest(T_MITRA, { query: { limit: 200 } }),
+                apiRequest(T_PESERTA, { query: { limit: 200 } })
+            ]);
+            mitraData = mitraRes.data || [];
+            pesertaData = pesertaRes.data || [];
+
+            pesertaByMitra = {};
+            pesertaData.forEach(p => {
+                if (!pesertaByMitra[p.x_18]) pesertaByMitra[p.x_18] = [];
+                pesertaByMitra[p.x_18].push(p);
+            });
+
+            renderMetrics();
+            renderMitraTable();
+            renderAgendaCalendar();
+        }
+
+        function renderMetrics() {
+            document.getElementById('mTotalMitra').textContent = mitraData.filter(m => m.x_04 === 'aktif').length;
+            document.getElementById('mTotalPeserta').textContent = pesertaData.length;
+            document.getElementById('mAntrean').textContent = pesertaData.filter(p => pesertaBio(p).status_tes === 'selesai_ujian').length;
+            const totalKupon = mitraData.reduce((sum, m) => sum + (parseInt(m.x_06) || 0), 0);
+            document.getElementById('mKupon').textContent = totalKupon;
+        }
+
+        function renderMitraTable(filter = '') {
+            const tbody = document.getElementById('mitraTableBody');
+            const f = filter.toLowerCase();
+
+            const rows = mitraData.filter(m => {
+                const detail = mitraDetail(m);
+                const namaMitra = (detail.nama_lengkap || m.x_01 || '').toLowerCase();
+                const pesertaList = pesertaByMitra[m.id_x] || [];
+                const cocokPeserta = pesertaList.some(p => (pesertaBio(p).bioNama || '').toLowerCase().includes(f));
+                return namaMitra.includes(f) || cocokPeserta || f === '';
+            });
+
+            if (rows.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-400 text-sm">Tidak ada data ditemukan.</td></tr>`;
+            } else {
+                tbody.innerHTML = rows.map(m => {
+                    const detail = mitraDetail(m);
+                    const namaMitra = detail.nama_lengkap || m.x_01;
+                    const pesertaList = pesertaByMitra[m.id_x] || [];
+                    const perluValidasi = pesertaList.filter(p => pesertaBio(p).status_tes === 'selesai_ujian');
+
+                    const pesertaHtml = pesertaList.length
+                        ? `<ul class="list-disc list-inside space-y-0.5">${pesertaList.map(p => {
+                              const bio = pesertaBio(p);
+                              const s = statusLabel(bio.status_tes);
+                              return `<li>${escapeHtml(bio.bioNama)} <span class="${s.cls} font-medium">(${s.text})</span></li>`;
+                          }).join('')}</ul>`
+                        : `<span class="text-gray-400">Belum ada peserta</span>`;
+
+                    const statusBadge = perluValidasi.length > 0
+                        ? `<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 text-[11px] px-2 py-0.5 rounded font-medium">
+                             <i class="fa-solid fa-clock-rotate-left text-[10px]"></i> Butuh ${perluValidasi.length} Validasi
+                           </span>`
+                        : `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] px-2 py-0.5 rounded font-medium">
+                             <i class="fa-solid fa-circle-check text-[10px]"></i> Seluruh Berkas Bersih
+                           </span>`;
+
+                    const akunStatus = m.x_04 === 'aktif'
+                        ? `<span class="text-[10px] text-emerald-600 font-bold block">Aktif</span>`
+                        : m.x_04 === 'pending'
+                            ? `<span class="text-[10px] text-amber-600 font-bold block">Menunggu Aktivasi</span>`
+                            : `<span class="text-[10px] text-rose-500 font-bold block">Nonaktif</span>`;
+
+                    const pesananPending = mitraPesanan(m).filter(o => o.status === 'menunggu_approval').length;
+                    const pesananBadge = pesananPending > 0
+                        ? `<span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-1.5 py-0.5 rounded mt-0.5 inline-flex items-center gap-1"><i class="fa-solid fa-cart-shopping text-[9px]"></i> ${pesananPending} Pesanan Kupon</span>`
+                        : '';
+
+                    return `<tr class="bg-white hover:bg-slate-50/50 transition">
+                        <td class="py-4 px-4">
+                            <div class="font-bold text-gray-900">${escapeHtml(namaMitra)}</div>
+                            <div class="text-[10px] text-gray-400 mt-0.5">ID: #${m.id_x} &bull; ${escapeHtml(detail.whatsapp || '-')}</div>
+                            ${akunStatus}
+                            ${pesananBadge}
+                        </td>
+                        <td class="py-4 px-4 font-semibold text-indigo-600">${m.x_05 || 0} Kupon</td>
+                        <td class="py-4 px-4 text-xs text-gray-700">${pesertaHtml}</td>
+                        <td class="py-4 px-4">${statusBadge}</td>
+                        <td class="py-4 px-4 text-center">
+                            <button onclick="openManage('${m.id_x}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-3 py-1.5 rounded shadow-sm transition">
+                                Kelola Mitra
+                            </button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+
+            document.getElementById('paginationInfo').textContent = `Menampilkan ${rows.length} dari ${mitraData.length} data mitra terdaftar`;
+        }
+
+        document.getElementById('searchMitra').addEventListener('input', (e) => renderMitraTable(e.target.value));
+
+        // ============ MATRIKS AGENDA PENGUJIAN MANDIRI ============
+        let agendaViewDate = new Date();
+        agendaViewDate.setDate(1);
+
+        function mitraNamaById(idMitra) {
+            const m = mitraData.find(x => String(x.id_x) === String(idMitra));
+            if (!m) return 'Mitra #' + idMitra;
+            const d = mitraDetail(m);
+            return d.nama_lengkap || m.x_01 || 'Mitra #' + idMitra;
+        }
+
+        function agendaByDate() {
+            const map = {};
+            pesertaData.forEach(p => {
+                const tgl = pesertaBio(p).tanggal_tes;
+                if (!tgl) return;
+                if (!map[tgl]) map[tgl] = [];
+                map[tgl].push(p);
+            });
+            return map;
+        }
+
+        function shiftAgendaMonth(delta, gotoToday = false) {
+            if (gotoToday) {
+                agendaViewDate = new Date();
+                agendaViewDate.setDate(1);
+            } else {
+                agendaViewDate.setMonth(agendaViewDate.getMonth() + delta);
+            }
+            renderAgendaCalendar();
+        }
+
+        function renderAgendaCalendar() {
+            const grid = document.getElementById('agendaCalendarGrid');
+            const label = document.getElementById('agendaMonthLabel');
+            if (!grid || !label) return;
+
+            const year = agendaViewDate.getFullYear();
+            const month = agendaViewDate.getMonth();
+            label.textContent = agendaViewDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1);
+            const startOffset = firstDay.getDay(); // 0 = Minggu
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const agenda = agendaByDate();
+
+            let cells = '';
+            for (let i = 0; i < startOffset; i++) {
+                cells += `<div></div>`;
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const items = agenda[dateStr] || [];
+                const isToday = dateStr === todayStr;
+                const hasAgenda = items.length > 0;
+
+                const baseCls = isToday
+                    ? 'border-indigo-500 ring-1 ring-indigo-300'
+                    : 'border-gray-200';
+                const bgCls = hasAgenda
+                    ? 'bg-indigo-50 hover:bg-indigo-100 cursor-pointer'
+                    : 'bg-gray-50 hover:bg-gray-100 cursor-pointer';
+
+                cells += `<div onclick="openAgendaDay('${dateStr}')" class="relative h-16 sm:h-20 border ${baseCls} ${bgCls} rounded-lg p-1.5 flex flex-col transition">
+                    <span class="text-[11px] font-bold ${isToday ? 'text-indigo-700' : 'text-gray-600'}">${d}</span>
+                    ${hasAgenda ? `<span class="mt-auto self-start bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">${items.length} tes</span>` : ''}
+                </div>`;
+            }
+
+            grid.innerHTML = cells;
+        }
+
+        function openAgendaDay(dateStr) {
+            const agenda = agendaByDate();
+            const items = agenda[dateStr] || [];
+            const tglLabel = new Date(dateStr + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('agendaDayTitle').textContent = tglLabel;
+
+            const list = document.getElementById('agendaDayList');
+            if (items.length === 0) {
+                list.innerHTML = '<p class="text-xs text-gray-400">Tidak ada jadwal pengujian pada tanggal ini.</p>';
+            } else {
+                list.innerHTML = items.map(p => {
+                    const bio = pesertaBio(p);
+                    const s = statusLabel(bio.status_tes);
+                    return `<div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <div>
+                            <p class="font-semibold text-gray-800 text-sm">${escapeHtml(bio.bioNama)}</p>
+                            <p class="text-[11px] text-gray-500 mt-0.5">Mitra: ${escapeHtml(mitraNamaById(p.x_18))}</p>
+                        </div>
+                        <span class="${s.cls} text-[11px] font-bold shrink-0 ml-2">${s.text}</span>
+                    </div>`;
+                }).join('');
+            }
+            toggleModal('agendaDayModal');
+        }
+
+        // ============ KELOLA MITRA MODAL ============
+        function openManage(idMitra) {
+            activeMitraId = idMitra;
+            const m = mitraData.find(x => String(x.id_x) === String(idMitra));
+            if (!m) return;
+            const detail = mitraDetail(m);
+
+            document.getElementById('manageMitraName').textContent = `Kelola: ${detail.nama_lengkap || m.x_01} (#${m.id_x})`;
+
+            const btn = document.getElementById('btnToggleActive');
+            if (m.x_04 === 'aktif') {
+                btn.textContent = 'Nonaktifkan Akun';
+                btn.className = 'text-xs font-bold px-3 py-2 rounded-lg shadow-sm transition bg-rose-100 text-rose-700 hover:bg-rose-200';
+            } else {
+                btn.textContent = 'Aktifkan Akun';
+                btn.className = 'text-xs font-bold px-3 py-2 rounded-lg shadow-sm transition bg-emerald-100 text-emerald-700 hover:bg-emerald-200';
+            }
+
+            renderManagePesanan(idMitra);
+            renderManagePeserta(idMitra);
+            toggleModal('manageModal');
+        }
+
+        function renderManagePesanan(idMitra) {
+            const m = mitraData.find(x => String(x.id_x) === String(idMitra));
+            if (!m) return;
+            const list = mitraPesanan(m);
+            const container = document.getElementById('managePesananList');
+            if (list.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400">Belum ada pesanan kupon.</p>';
+                return;
+            }
+            const sorted = [...list].sort((a, b) => new Date(b.tanggal_pesan) - new Date(a.tanggal_pesan));
+            container.innerHTML = sorted.map(o => {
+                const s = pesananStatusLabel(o.status);
+                const tgl = new Date(o.tanggal_pesan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                const aksi = o.status === 'menunggu_approval'
+                    ? `<div class="flex gap-1 shrink-0">
+                         <button onclick="setujuiPesanan('${o.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1 rounded">Setujui</button>
+                         <button onclick="tolakPesanan('${o.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 text-[10px] font-bold px-2 py-1 rounded">Tolak</button>
+                       </div>`
+                    : `<span class="px-2 py-0.5 rounded font-bold border ${s.cls} shrink-0">${s.text}</span>`;
+                return `<div class="flex items-center justify-between border ${s.cls} rounded-lg px-3 py-2 text-xs gap-2">
+                    <div>
+                        <p class="font-semibold text-gray-800">${escapeHtml(o.nama_paket)} <span class="text-gray-400 font-normal">(${o.jumlah_kupon} kupon)</span></p>
+                        <p class="text-[10px] text-gray-400">${tgl} &bull; ${formatRupiah(o.harga)}</p>
+                    </div>
+                    ${aksi}
+                </div>`;
+            }).join('');
+        }
+
+        async function setujuiPesanan(orderId) {
+            const m = mitraData.find(x => String(x.id_x) === String(activeMitraId));
+            if (!m) return;
+            const list = mitraPesanan(m);
+            const order = list.find(o => o.id === orderId);
+            if (!order) return;
+
+            if (!confirm(`Setujui pesanan "${order.nama_paket}"? ${order.jumlah_kupon} kupon akan ditambahkan ke akun mitra. Pastikan pembayaran sudah terverifikasi.`)) return;
+
+            order.status = 'disetujui';
+            order.tanggal_approve = new Date().toISOString();
+
+            const sisaBaru = (parseInt(m.x_05) || 0) + order.jumlah_kupon;
+            const totalBaru = (parseInt(m.x_06) || 0) + order.jumlah_kupon;
+
+            await apiRequest(T_MITRA, {
+                method: 'PUT', id: m.id_x,
+                body: { x_05: String(sisaBaru), x_06: String(totalBaru), x_07: JSON.stringify(list) }
+            });
+
+            m.x_05 = String(sisaBaru);
+            m.x_06 = String(totalBaru);
+            m.x_07 = JSON.stringify(list);
+
+            renderMetrics();
+            renderMitraTable(document.getElementById('searchMitra').value);
+            renderManagePesanan(activeMitraId);
+        }
+
+        async function tolakPesanan(orderId) {
+            const m = mitraData.find(x => String(x.id_x) === String(activeMitraId));
+            if (!m) return;
+            const list = mitraPesanan(m);
+            const order = list.find(o => o.id === orderId);
+            if (!order) return;
+
+            const catatan = prompt('Alasan penolakan (opsional):', '');
+            order.status = 'ditolak';
+            order.catatan_admin = catatan || null;
+
+            await apiRequest(T_MITRA, { method: 'PUT', id: m.id_x, body: { x_07: JSON.stringify(list) } });
+            m.x_07 = JSON.stringify(list);
+
+            renderMitraTable(document.getElementById('searchMitra').value);
+            renderManagePesanan(activeMitraId);
+        }
+
+        function renderManagePeserta(idMitra) {
+            const list = pesertaByMitra[idMitra] || [];
+            const container = document.getElementById('managePesertaList');
+            if (list.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400">Belum ada peserta.</p>';
+                return;
+            }
+            container.innerHTML = list.map(p => {
+                const bio = pesertaBio(p);
+                const s = statusLabel(bio.status_tes);
+                const btnValidasi = bio.status_tes === 'selesai_ujian'
+                    ? `<button onclick="validasiPeserta('${p.id_x}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1 rounded">Tandai Selesai Terkirim</button>`
+                    : '';
+                return `<div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-2 text-xs">
+                    <div>
+                        <span class="font-semibold text-gray-800">${escapeHtml(bio.bioNama)}</span>
+                        <span class="${s.cls} ml-2 font-medium">(${s.text})</span>
+                    </div>
+                    ${btnValidasi}
+                </div>`;
+            }).join('');
+        }
+
+        async function toggleMitraStatus() {
+            const m = mitraData.find(x => String(x.id_x) === String(activeMitraId));
+            if (!m) return;
+            const newStatus = m.x_04 === 'aktif' ? 'nonaktif' : 'aktif';
+            await apiRequest(T_MITRA, { method: 'PUT', id: m.id_x, body: { x_04: newStatus } });
+            m.x_04 = newStatus;
+            renderMetrics();
+            renderMitraTable(document.getElementById('searchMitra').value);
+            openManage(activeMitraId);
+        }
+
+        async function tambahKupon() {
+            const input = document.getElementById('kuponInput');
+            const jumlah = parseInt(input.value);
+            if (!jumlah || jumlah <= 0) { alert('Masukkan jumlah kupon yang valid.'); return; }
+            const m = mitraData.find(x => String(x.id_x) === String(activeMitraId));
+            if (!m) return;
+
+            const sisaBaru = (parseInt(m.x_05) || 0) + jumlah;
+            const totalBaru = (parseInt(m.x_06) || 0) + jumlah;
+            await apiRequest(T_MITRA, { method: 'PUT', id: m.id_x, body: { x_05: String(sisaBaru), x_06: String(totalBaru) } });
+            m.x_05 = String(sisaBaru);
+            m.x_06 = String(totalBaru);
+            input.value = '';
+            renderMetrics();
+            renderMitraTable(document.getElementById('searchMitra').value);
+        }
+
+        async function validasiPeserta(idPeserta) {
+            const p = pesertaData.find(x => String(x.id_x) === String(idPeserta));
+            if (!p) return;
+            const bio = pesertaBio(p);
+            bio.status_tes = 'selesai_terkirim';
+            bio.tanggal_selesai = new Date().toISOString();
+            await apiRequest(T_PESERTA, { method: 'PUT', id: idPeserta, body: { x_02: JSON.stringify(bio) } });
+            p.x_02 = JSON.stringify(bio);
+            renderMetrics();
+            renderMitraTable(document.getElementById('searchMitra').value);
+            renderManagePeserta(activeMitraId);
+        }
+
+        // ============ LOGIN / SESSION ============
+        function loadSession() {
+            const raw = localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+            return raw ? JSON.parse(raw) : null;
+        }
+
+        async function initAdmin(admin) {
+            document.getElementById('adminName').textContent = admin.x_01 || 'Administrator';
+            document.getElementById('loginGate').classList.add('hidden');
+            document.getElementById('appShell').classList.remove('hidden');
+            await loadAllData();
+        }
+
+        function logout() {
+            localStorage.removeItem(SESSION_KEY);
+            sessionStorage.removeItem(SESSION_KEY);
+            location.reload();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errBox = document.getElementById('loginError');
+            errBox.classList.add('hidden');
+
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value;
+            const remember = document.getElementById('loginRemember').checked;
+
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.textContent = 'Memeriksa...';
+
+            try {
+                const res = await apiRequest(T_ADMIN, { method: 'POST', action: 'login', roleHeader: 'admin', body: { username, password } });
+                const admin = res.data;
+                if (remember) localStorage.setItem(SESSION_KEY, JSON.stringify(admin));
+                else sessionStorage.setItem(SESSION_KEY, JSON.stringify(admin));
+                await initAdmin(admin);
+            } catch (err) {
+                errBox.textContent = err.message || 'Username atau password admin salah.';
+                errBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Masuk Sebagai Admin';
+            }
+        });
+
+        (function () {
+            const saved = loadSession();
+            if (saved) initAdmin(saved);
+        })();
+    </script>
+
+</body>
+</html>
