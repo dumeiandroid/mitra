@@ -2652,20 +2652,6 @@ function initBiodataCpmi() {
 // INIT
 // ═══════════════════════════════════════════
 window.onload = async () => {
-  // ── AUTO-LOGIN via URL ?token=... ──
-  // Jika ada parameter token di URL, simpan sebagai token sesi (sama seperti
-  // token yang sudah tersimpan di localStorage) sehingga alur pengecekan token
-  // di bawah (lsGet('token')) otomatis memvalidasi & login tanpa peserta perlu
-  // mengetik token secara manual di form. Jika token ternyata salah/tidak
-  // ditemukan, alur yang sudah ada akan otomatis jatuh kembali ke form login
-  // manual (screenDaftar) seperti biasa.
-  try {
-    const _urlToken = new URLSearchParams(window.location.search).get('token');
-    if (_urlToken && _urlToken.trim()) {
-      lsSet('token', _urlToken.trim());
-    }
-  } catch (e) { console.warn('[AUTO-LOGIN] Gagal baca token dari URL:', e); }
-
   sl('Memeriksa paket...');
 
   // Cek paket di server SEBELUM apapun (termasuk sebelum cek token)
