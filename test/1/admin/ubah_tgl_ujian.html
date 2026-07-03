@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viewer — nilai1_json</title>
+<title>Viewer — client_mitra</title>
 <style>
 :root {
     --primary: #667eea;
@@ -178,7 +178,7 @@ tr.row-selected td { background: #f5f7ff; }
 <body>
 
 <div class="topnav">
-    <div class="topnav-brand">📋 Viewer — nilai1_json</div>
+    <div class="topnav-brand">📋 Viewer — client_mitra</div>
     <div id="srvChips" style="display:flex;gap:6px;"></div>
 </div>
 
@@ -190,7 +190,7 @@ tr.row-selected td { background: #f5f7ff; }
         </div>
 
         <div class="controls-bar">
-            <input type="text" class="ctrl-input" id="tableInput" value="nilai1_json" style="width:160px" placeholder="Nama tabel">
+            <input type="text" class="ctrl-input" id="tableInput" value="client_mitra" style="width:160px" placeholder="Nama tabel">
             <input type="text" class="ctrl-input" id="searchInput" placeholder="🔎 Cari id / x_01 / x_05..." style="width:240px">
             <button class="btn btn-primary" onclick="loadTable()">🔄 Refresh</button>
             <span class="info-pill" id="lastUpdate"></span>
@@ -258,7 +258,7 @@ function getTglTes(x02str) {
 }
 
 async function fetchTable() {
-    const tbl = document.getElementById('tableInput').value.trim() || 'nilai1_json';
+    const tbl = document.getElementById('tableInput').value.trim() || 'client_mitra';
     const res = await fetch(`${API_BASE}?table=${encodeURIComponent(tbl)}`, {
         headers: { 'X-Custom-Auth': AUTH_KEY }
     });
@@ -389,7 +389,7 @@ function escapeHtml(str) {
    SIMPAN TGL_TES → update key tgl_tes di dalam x_02 (JSON), kirim PUT
 ══════════════════════════════════════════════════════════════════ */
 async function simpanTglTes(idX) {
-    const tbl       = document.getElementById('tableInput').value.trim() || 'nilai1_json';
+    const tbl       = document.getElementById('tableInput').value.trim() || 'client_mitra';
     const newTgl    = document.getElementById(`tgl-${idX}`).value;
     const statusEl  = document.getElementById(`status-${idX}`);
     const row       = rawData.find(r => String(r.id_x) === String(idX));
@@ -425,7 +425,7 @@ async function simpanTglTes(idX) {
 }
 
 async function terapkanBulkTglTes() {
-    const tbl      = document.getElementById('tableInput').value.trim() || 'nilai1_json';
+    const tbl      = document.getElementById('tableInput').value.trim() || 'client_mitra';
     const newTgl   = document.getElementById('bulkDateInput').value;
     const statusEl = document.getElementById('bulkStatus');
     const ids      = Array.from(selectedIds);

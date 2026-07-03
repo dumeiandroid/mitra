@@ -393,8 +393,8 @@
 <!-- Header -->
 <div class="page-header">
     <div>
-        <h1>📊 Transfer Data Psikogram JSON: <span id="hdr-src">nilai1_json</span> → <span id="hdr-dst">rekap_nilai1</span></h1>
-        <span>Sumber: tabel <strong id="hdr-src2">nilai1_json</strong> &nbsp;|&nbsp; Tujuan: tabel <strong id="hdr-dst2">rekap_nilai1</strong> &nbsp;|&nbsp; Src: <span id="hdr-srv-src" class="hdr-srv-badge">lidan-co-id.pages.dev</span> → Dst: psikogram_db &nbsp;|&nbsp; <strong style="color:#ffd93d;">Format: JSON</strong></span>
+        <h1>📊 Transfer Data Psikogram JSON: <span id="hdr-src">client_mitra</span> → <span id="hdr-dst">rekap_nilai1</span></h1>
+        <span>Sumber: tabel <strong id="hdr-src2">client_mitra</strong> &nbsp;|&nbsp; Tujuan: tabel <strong id="hdr-dst2">rekap_nilai1</strong> &nbsp;|&nbsp; Src: <span id="hdr-srv-src" class="hdr-srv-badge">lidan-co-id.pages.dev</span> → Dst: psikogram_db &nbsp;|&nbsp; <strong style="color:#ffd93d;">Format: JSON</strong></span>
     </div>
 </div>
 
@@ -425,12 +425,12 @@
                 <div class="form-group">
                     <label>📥 Tabel Sumber (Baca Data)</label>
                     <div style="display:flex; gap:8px;">
-                        <input type="text" id="cfg-src-table" value="nilai1_json" placeholder="nama_tabel_sumber"
+                        <input type="text" id="cfg-src-table" value="client_mitra" placeholder="nama_tabel_sumber"
                             oninput="onTableInput()" style="flex:1;">
                         <button class="btn btn-secondary" style="padding:9px 12px; white-space:nowrap;"
                             onclick="resetSrcTable()">↩ Reset</button>
                     </div>
-                    <div style="font-size:11px; color:#888; margin-top:4px;">Default: <code>nilai1_json</code></div>
+                    <div style="font-size:11px; color:#888; margin-top:4px;">Default: <code>client_mitra</code></div>
                 </div>
                 <div class="form-group">
                     <label>📤 Tabel Tujuan (Simpan Rekap)</label>
@@ -458,7 +458,7 @@
                 background:#f0edff; border-radius:8px; border-left:4px solid #5F4EDA;
                 font-size:13px; display:flex; align-items:center; gap:10px;">
                 <span style="font-size:18px;">ℹ️</span>
-                <span>Aktif: Membaca dari tabel <strong id="info-src">nilai1_json</strong>,
+                <span>Aktif: Membaca dari tabel <strong id="info-src">client_mitra</strong>,
                 menyimpan ke tabel <strong id="info-dst">rekap_nilai1</strong></span>
             </div>
         </div>
@@ -511,7 +511,7 @@
             <!-- Mode: All -->
             <div class="mode-panel" id="panel-all">
                 <p style="color:#777; font-size:14px; margin-bottom:12px;">
-                    ⚠️ Mode ini akan mengambil <strong>seluruh data</strong> dari tabel <code>nilai1_json</code>. Pastikan koneksi stabil.
+                    ⚠️ Mode ini akan mengambil <strong>seluruh data</strong> dari tabel <code>client_mitra</code>. Pastikan koneksi stabil.
                 </p>
                 <div class="btn-row">
                     <button class="btn btn-primary" onclick="fetchPreview('all')">🔍 Ambil &amp; Preview Semua</button>
@@ -661,14 +661,14 @@ let activeSrvIdx = 0;
 const CFG = {
     get API()  { return `https://${SERVERS[activeSrvIdx].domain}${SERVERS[activeSrvIdx].path}`; },
     API_DST  : 'https://lidan-co-id.pages.dev/api/db_psikogram1',  // Tujuan TETAP
-    SRC_TABLE  : 'nilai1_json',   // Diupdate dinamis via applyTableConfig()
+    SRC_TABLE  : 'client_mitra',   // Diupdate dinamis via applyTableConfig()
     DST_TABLE  : 'rekap_nilai1',  // Diupdate dinamis via applyTableConfig()
     SECRET     : 'admin',
     DELAY_MS   : 300
 };
 
 // Default table names (untuk tombol reset)
-const DEFAULT_TABLES = { SRC: 'nilai1_json', DST: 'rekap_nilai1' };
+const DEFAULT_TABLES = { SRC: 'client_mitra', DST: 'rekap_nilai1' };
 
 // =========================================================
 // SERVER SWITCHER

@@ -795,7 +795,7 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
         </div>
         <div class="controls-bar">
             <label style="font-size:13px;font-weight:700;color:var(--muted)">Tabel:</label>
-            <input type="text" class="ctrl-input" id="allTableInput" value="nilai1_json" style="width:140px">
+            <input type="text" class="ctrl-input" id="allTableInput" value="client_mitra" style="width:140px">
             <button class="btn btn-primary" onclick="allLoadTable()">🔄 Muat</button>
             <button class="btn btn-success" onclick="openTokenModal()">＋ Tambah Token</button>
         </div>
@@ -819,7 +819,7 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
         </div>
         <div class="controls-bar">
             <label style="font-size:13px;font-weight:700;color:var(--muted)">Tabel:</label>
-            <input type="text" class="ctrl-input" id="emptyTableInput" value="nilai1_json" style="width:140px">
+            <input type="text" class="ctrl-input" id="emptyTableInput" value="client_mitra" style="width:140px">
             <button class="btn btn-primary" onclick="emptyLoadTable()">🔄 Muat</button>
         </div>
         <!-- Paket Filter Bar -->
@@ -856,7 +856,7 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
         </div>
         <div class="controls-bar">
             <label style="font-size:13px;font-weight:700;color:var(--muted)">Tabel:</label>
-            <input type="text" class="ctrl-input" id="todayTableInput" value="nilai1_json" style="width:140px">
+            <input type="text" class="ctrl-input" id="todayTableInput" value="client_mitra" style="width:140px">
             <label style="font-size:13px;font-weight:700;color:var(--muted);margin-left:6px">Tanggal:</label>
             <input type="date" id="todayDateInput" style="padding:8px 12px;border:2px solid var(--border);border-radius:10px;font-size:14px;outline:none">
             <button class="btn btn-warning" onclick="todayLoadTable()">🔍 Cari</button>
@@ -899,7 +899,7 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
         </div>
         <div class="controls-bar">
             <label style="font-size:13px;font-weight:700;color:var(--muted)">Tabel:</label>
-            <input type="text" class="ctrl-input" id="printTableInput" value="nilai1_json" style="width:140px">
+            <input type="text" class="ctrl-input" id="printTableInput" value="client_mitra" style="width:140px">
             <label style="font-size:13px;font-weight:700;color:var(--muted)">Per halaman:</label>
             <input type="number" class="ctrl-input" id="printLimitInput" value="15" min="1" max="100" style="width:70px">
             <button class="btn btn-primary" onclick="printLoadPage(0)">🔄 Muat</button>
@@ -1656,7 +1656,7 @@ const NAV_TABS = [
 ];
 
 function bukaTransfer() {
-    const tbl = document.getElementById('allTableInput')?.value?.trim() || 'nilai1_json';
+    const tbl = document.getElementById('allTableInput')?.value?.trim() || 'client_mitra';
     window.open('index_transfer_json.html?src=' + encodeURIComponent(tbl) + '&dst=rekap_nilai1', '_blank');
 }
 
@@ -2014,7 +2014,7 @@ function showQR(idX, token) {
 ══════════════════════════════════════════════════════════════════ */
 async function stopPeserta(idX) {
     if (!confirm(`Paksa selesai timer peserta ID ${idX}?`)) return;
-    const table = document.getElementById('allTableInput').value.trim() || 'nilai1_json';
+    const table = document.getElementById('allTableInput').value.trim() || 'client_mitra';
     try {
         await fetch(`${API_INSERT}?table=${table}&id_x=${idX}`, {
             method: 'PUT',
@@ -2046,7 +2046,7 @@ document.addEventListener('mouseout', e => {
 /* ══════════════════════════════════════════════════════════════════
    PAGE 1 — SEMUA DATA
 ══════════════════════════════════════════════════════════════════ */
-let allTableName = 'nilai1_json';
+let allTableName = 'client_mitra';
 let rawDataAll   = [];   // ← shared cache semua data mentah dari server
 
 async function allFetch() {
@@ -2130,7 +2130,7 @@ function allInitTable(rows) {
    PAGE 2 — TOKEN KOSONG
    Tidak fetch sendiri — pakai shared cache rawDataAll dari allUpdate
 ══════════════════════════════════════════════════════════════════ */
-let emptyTableName       = 'nilai1_json';
+let emptyTableName       = 'client_mitra';
 let emptySelectedPaketIdX  = null;   // filter paket token kosong
 
 function emptyLoadTable() {
@@ -2246,7 +2246,7 @@ function emptyInitTable(rows) {
    PAGE 3 — PESERTA HARI INI
    Tidak fetch sendiri — filter dari shared cache rawDataAll
 ══════════════════════════════════════════════════════════════════ */
-let todayTableName = 'nilai1_json';
+let todayTableName = 'client_mitra';
 
 function todayLoadTable() {
     todayTableName = document.getElementById('todayTableInput').value.trim() || 'nilai1';
@@ -2468,7 +2468,7 @@ async function toggleBayar(idX, btn) {
     const newPayment = (currentPayment === 'done') ? 'pending' : 'done';
     x02Obj.payment = newPayment;
 
-    const table = document.getElementById('todayTableInput').value.trim() || 'nilai1_json';
+    const table = document.getElementById('todayTableInput').value.trim() || 'client_mitra';
 
     // 1. Update localStorage backup dulu (instan)
     const m = getBayarMap();
@@ -2659,7 +2659,7 @@ async function doHapusPeserta() {
     btn.disabled = true;
     btn.textContent = '⏳ Menghapus...';
 
-    const tbl = document.getElementById('todayTableInput').value.trim() || 'nilai1_json';
+    const tbl = document.getElementById('todayTableInput').value.trim() || 'client_mitra';
     const items = _hapusBulkItems || [];
 
     try {
@@ -2904,7 +2904,7 @@ async function toggleLogout(idX, aktifkan) {
     let bioObj = {};
     try { bioObj = JSON.parse(row.x_02 || '{}'); } catch(e) {}
     bioObj.logout = aktifkan;
-    const tbl = document.getElementById('todayTableInput').value.trim() || 'nilai1_json';
+    const tbl = document.getElementById('todayTableInput').value.trim() || 'client_mitra';
     try {
         const res = await fetch(`${API_INSERT}?table=${tbl}&id_x=${idX}`, {
             method: 'PUT',
@@ -2928,7 +2928,7 @@ async function aktivasiPeserta(idX, newStatus = 'aktif') {
     let bioObj = {};
     try { bioObj = JSON.parse(row.x_02 || '{}'); } catch(e) {}
     bioObj.status = newStatus;
-    const tbl = document.getElementById('todayTableInput').value.trim() || 'nilai1_json';
+    const tbl = document.getElementById('todayTableInput').value.trim() || 'client_mitra';
     try {
         const res = await fetch(`${API_INSERT}?table=${tbl}&id_x=${idX}`, {
             method: 'PUT',

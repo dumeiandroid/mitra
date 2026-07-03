@@ -1,3 +1,4 @@
+<!-- dsdfsd -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -155,6 +156,13 @@ body {
 .btn-outline { background: white; color: var(--muted); border: 2px solid var(--border); }
 .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
 .btn-sm { padding: 6px 12px; font-size: 12px; }
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;}
+.modal-overlay.active{display:flex;}
+.modal-box{background:#fff;border-radius:16px;padding:24px;box-shadow:0 8px 40px rgba(0,0,0,.2);position:relative;width:100%;}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;padding:0;}
+.modal-close:hover{color:var(--text);}
+
 
 /* ── DATATABLES ── */
 .dataTables_wrapper { overflow-x: auto; width: 100%; }
@@ -352,7 +360,7 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
     <!-- Server chips topnav -->
     <div id="topnavSrvChips" style="display:flex;gap:5px;flex:1;padding:0 10px;overflow-x:auto;scrollbar-width:none;"><!-- filled by JS --></div>
     <div class="topnav-right">
-        <div class="info-pill pill-blue" style="font-size:12px;">
+        <div class="info-pill pill-blue" id="autoRefreshPill" style="font-size:12px;">
             <span class="pulse-dot"></span>
             Auto-refresh 5 detik
         </div>
@@ -376,6 +384,7 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
       <div class="info-bar">
         <!-- kosong, info sudah di topnav -->
       </div>
+      <button onclick="openInstruksiModalGlobal()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">📋 Instruksi</button>
     </div>
 
     <div class="controls-bar" style="display:none;">
@@ -407,7 +416,13 @@ const SERVERS = [
     { label: '4', domain: 'talentmap.my.id'        },
 ];
 const API_PATH = '/api/contacts_filter_dinamis7';
+const SRV_STORAGE_KEY = 'cpmi_activeSrvIdx';
+// Restore pilihan server terakhir dari localStorage (kalau valid)
 let activeSrvIdx = 0;
+try {
+    const _saved = parseInt(localStorage.getItem(SRV_STORAGE_KEY));
+    if (!isNaN(_saved) && _saved >= 0 && _saved < SERVERS.length) activeSrvIdx = _saved;
+} catch (e) {}
 
 // Getter dinamis — semua fetch pakai ini
 function getApiBase() { return `https://${SERVERS[activeSrvIdx].domain}${API_PATH}`; }
@@ -450,6 +465,7 @@ function renderSrvChips() {
 function switchSrcServer(idx) {
     if (idx === activeSrvIdx) return;
     activeSrvIdx = idx;
+    try { localStorage.setItem(SRV_STORAGE_KEY, String(idx)); } catch (e) {}
     renderSrvChips();
     // Reset cache & reload data jika sudah login
     lastHash = null;
@@ -465,6 +481,15 @@ renderSrvChips();
 
 // ============================================================
 // STATE
+// ============================================================
+// ╔══════════════════════════════════════════════════════╗
+// ║  KONFIGURASI AUTO-REFRESH                           ║
+// ║  autoRefresh: true  → refresh otomatis tiap 5 detik ║
+// ║  autoRefresh: false → hanya refresh saat klik tombol║
+// ╚══════════════════════════════════════════════════════╝
+const APP_CONFIG = {
+    autoRefresh: false
+};
 // ============================================================
 let testerTable    = null;
 let testerInterval = null;
@@ -509,6 +534,54 @@ function renderJsonBio(raw) {
     } catch(e) { return escHtml(raw); }
 }
 
+function renderProgresGabung(raw05, raw06, raw07) {
+    // Kumpulkan semua chip dari x_05 (biru), x_06 (abu), x_07 (hijau)
+    let items = [];
+    // x_05 — chip biru (seperti renderSkorField)
+    if (raw05 && raw05.trim() !== '') {
+        try {
+            const obj = JSON.parse(raw05);
+            Object.entries(obj).forEach(([k]) => {
+                const lbl = shortLabel(k);
+                items.push(`<span title="${escHtml(k)}" style="font-size:11px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:2px 6px;white-space:nowrap;box-sizing:border-box;text-align:center"><span style="color:#1e40af;font-weight:700">${escHtml(lbl)}</span></span>`);
+            });
+        } catch(e) {}
+    }
+    // x_06 — chip abu (seperti renderJsonField)
+    if (raw06 && raw06.trim() !== '') {
+        try {
+            const obj = JSON.parse(raw06);
+            Object.entries(obj).forEach(([k]) => {
+                const lbl = shortLabel(k);
+                items.push(`<span title="${escHtml(k)}" style="font-size:11px;background:#f1f5f9;border-radius:4px;padding:2px 6px;white-space:nowrap;box-sizing:border-box;text-align:center">${escHtml(lbl)}</span>`);
+            });
+        } catch(e) {}
+    }
+    // x_07 — chip hijau
+    if (raw07 && raw07.trim() !== '') {
+        try {
+            const obj = JSON.parse(raw07);
+            Object.entries(obj).forEach(([k]) => {
+                const lbl = shortLabel(k);
+                items.push(`<span title="${escHtml(k)}" style="font-size:11px;background:#dcfce7;border:1px solid #86efac;border-radius:4px;padding:2px 6px;white-space:nowrap;box-sizing:border-box;text-align:center"><span style="color:#166534;font-weight:700">${escHtml(lbl)}</span></span>`);
+            });
+        } catch(e) {}
+    }
+    if (items.length === 0) return '<span style="color:#ccc;font-size:12px">—</span>';
+    return `<div style="display:flex;flex-wrap:wrap;gap:2px;width:240px;cursor:default">${items.join('')}</div>`;
+}
+
+
+const LABEL_SHORT = {
+    'cfit1':'c1','cfit2':'c2','cfit3':'c3','cfit4':'c4',
+    'tkd3':'t3','tkd6':'t6',
+    'rmib_k1':'r1','rmib_k2':'r2','rmib_k3':'r3','rmib_k4':'r4',
+    'rmib_k5':'r5','rmib_k6':'r6','rmib_k7':'r7','rmib_k8':'r8',
+    'epps':'e',
+    ...Object.fromEntries(Array.from({length:30},(_,i)=>[`who_${i+1}`,`w${i+1}`]))
+};
+function shortLabel(k) { return LABEL_SHORT[k] || k; }
+
 function renderSkorField(raw) {
     if (!raw || raw.trim() === '') return '<span style="color:#ccc;font-size:12px">—</span>';
     try {
@@ -517,7 +590,8 @@ function renderSkorField(raw) {
         if (entries.length === 0) return '<span style="color:#ccc;font-size:12px">—</span>';
         const tooltip = entries.map(([k,v]) => `${k}: ${v}`).join(' | ');
         const items   = entries.map(([k]) => {
-            return `<span style="font-size:11px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:2px 6px;white-space:nowrap;flex:0 0 calc(25% - 3px);box-sizing:border-box;text-align:center"><span style="color:#1e40af;font-weight:700">${escHtml(k)}</span></span>`;
+            const lbl = shortLabel(k);
+            return `<span title="${escHtml(k)}" style="font-size:11px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:2px 6px;white-space:nowrap;flex:0 0 calc(25% - 3px);box-sizing:border-box;text-align:center"><span style="color:#1e40af;font-weight:700">${escHtml(lbl)}</span></span>`;
         }).join('');
         return `<div title="${escHtml(tooltip)}" style="display:flex;flex-wrap:wrap;gap:2px;width:240px;cursor:default">${items}</div>`;
     } catch(e) {
@@ -531,14 +605,15 @@ function renderJsonField(raw) {
         const obj     = JSON.parse(raw);
         const entries = Object.entries(obj);
         if (entries.length === 0) return '<span style="color:#ccc;font-size:12px">—</span>';
-        const items = entries.map(([k]) =>
-            `<span style="font-size:11px;background:#f1f5f9;border-radius:4px;padding:2px 6px;white-space:nowrap;flex:0 0 calc(25% - 3px);box-sizing:border-box;text-align:center">${escHtml(k)}</span>`
-        ).join('');
+        const items = entries.map(([k]) => {
+            const lbl = shortLabel(k);
+            return `<span title="${escHtml(k)}" style="font-size:11px;background:#f1f5f9;border-radius:4px;padding:2px 6px;white-space:nowrap;flex:0 0 calc(25% - 3px);box-sizing:border-box;text-align:center">${escHtml(lbl)}</span>`;
+        }).join('');
         const keyOnly = entries.map(([k]) => k).join(', ');
         return `<div title="${escHtml(keyOnly)}" style="display:flex;flex-wrap:wrap;gap:2px;width:240px;cursor:default">${items}</div>`;
     } catch(e) {
         const key = raw.split(':')[0].trim();
-        return `<span title="${escHtml(raw)}" style="font-size:11px;background:#f1f5f9;border-radius:4px;padding:1px 6px;cursor:default">${escHtml(key)}</span>`;
+        return `<span title="${escHtml(raw)}" style="font-size:11px;background:#f1f5f9;border-radius:4px;padding:1px 6px;cursor:default">${escHtml(shortLabel(key))}</span>`;
     }
 }
 
@@ -588,6 +663,45 @@ function renderTimer(x04Raw) {
     return '<span style="color:#ccc;font-size:12px">—</span>';
 }
 
+// ── Aksi (kolom x_04 — flag token bermasalah) ──
+const MSG_AKSI_TOOLTIP = 'Tekan tombol di baris jika token bermasalah karena gangguan internet.';
+
+function infoAksi() {
+    alert(MSG_AKSI_TOOLTIP);
+}
+
+function renderAksi(x04Raw, idX) {
+    if (!x04Raw || String(x04Raw).trim() === '') {
+        return '<span style="color:#ccc;font-size:12px">—</span>';
+    }
+    return `<button class="btn btn-warning btn-sm" style="padding:4px 10px;font-size:11px"
+                onclick="resetTokenBermasalah('${String(idX).replace(/'/g, "\\'")}')"
+                title="${escHtml(MSG_AKSI_TOOLTIP)}">🔄 Reset Token</button>`;
+}
+
+async function resetTokenBermasalah(idX) {
+    if (!confirm('Kosongkan x_04 untuk baris ini?')) return;
+    const url = `${API_BASE}?table=${encodeURIComponent(tableName)}&id_x=${encodeURIComponent(idX)}`;
+    console.log('[resetTokenBermasalah] URL:', url, '| id_x:', idX);
+    try {
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Custom-Auth': AUTH_KEY },
+            body: JSON.stringify({ x_04: '' })
+        });
+        const text = await res.text();
+        console.log('[resetTokenBermasalah] HTTP status:', res.status, '| response:', text);
+        let json;
+        try { json = JSON.parse(text); } catch(e) { throw new Error('Response bukan JSON: ' + text); }
+        if (!json.success) throw new Error(json.message || json.error || 'Gagal update (lihat console).');
+        lastHash = null;
+        await update();
+    } catch (e) {
+        console.error('[resetTokenBermasalah] Error:', e);
+        alert('Gagal mengosongkan x_04: ' + e.message);
+    }
+}
+
 function renderViolation(x09Raw) {
     if (!x09Raw || x09Raw.trim() === '') return '<span style="color:#ccc;font-size:12px">—</span>';
     let entries = [];
@@ -599,7 +713,7 @@ function renderViolation(x09Raw) {
     const tooltip = entries.map(([k,v]) => `${k}: ${v}x`).join(' | ');
     const summary = entries.map(([k,v]) => {
         const c = parseInt(v) >= 5 ? '#dc2626' : parseInt(v) >= 2 ? '#d97706' : '#16a34a';
-        return `<span style="color:${c};font-weight:600">${k} ${v}x</span>`;
+        return `<span title="${escHtml(k)}" style="color:${c};font-weight:600">${escHtml(shortLabel(k))} ${v}x</span>`;
     }).join('<span style="color:#ccc"> · </span>');
     return `<div title="Total: ${total}x &#10;${tooltip}" style="cursor:default;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${summary}</div>`;
 }
@@ -710,23 +824,25 @@ function buildRows(data) {
         .map(row => ({
             id_x:   String(row.id_x || ''),
             selfie: renderTodaySelfie(row.x_02),
+            x_01:   String(row.x_01 || ''),
             x_02:   renderJsonBio(row.x_02),
-            x_05:   renderSkorField(row.x_05),
-            x_06:   renderJsonField(row.x_06),
+            progres: renderProgresGabung(row.x_05, row.x_06, row.x_07),
             x_09:   renderViolation(row.x_09 || ''),
+            aksi:   renderAksi(row.x_04 || '', row.id_x || ''),
             tgl:    `<span style="font-size:12px;color:var(--muted)">${getDateFromX02(row.x_02)}</span>`
         }));
 }
 
 function initTable(rows) {
-    const heads = `<th>ID</th><th>Selfie</th><th>Biodata</th><th>Skor</th><th>Skor 1</th><th>🔄 Tab</th><th>Tgl Tes</th>`;
+    const heads = `<th>ID</th><th>Selfie</th><th>Token</th><th>Biodata</th><th>Progres</th><th>🔄 Tab</th><th onclick="infoAksi()" title="${escHtml(MSG_AKSI_TOOLTIP)}" style="cursor:help">Aksi ℹ️</th><th>Tgl Tes</th>`;
     const cols  = [
         { data: 'id_x',   orderable: true },
         { data: 'selfie', orderable: false },
+        { data: 'x_01' },
         { data: 'x_02' },
-        { data: 'x_05' },
-        { data: 'x_06' },
+        { data: 'progres', orderable: false },
         { data: 'x_09',   orderable: false, defaultContent: '—' },
+        { data: 'aksi',   orderable: false, defaultContent: '—' },
         { data: 'tgl',    orderable: false }
     ];
     document.getElementById('todayContainer').innerHTML = `
@@ -901,7 +1017,24 @@ document.getElementById('dateInput').value = todayString();
 function startApp() {
     update();
     if (testerInterval) clearInterval(testerInterval);
-    testerInterval = setInterval(update, 5000);
+    if (APP_CONFIG.autoRefresh) {
+        testerInterval = setInterval(update, 5000);
+    }
+    updateRefreshPill();
+}
+
+function updateRefreshPill() {
+    const pill = document.getElementById('autoRefreshPill');
+    if (!pill) return;
+    if (APP_CONFIG.autoRefresh) {
+        pill.innerHTML = '<span class="pulse-dot"></span> Auto-refresh 5 detik';
+        pill.style.background = '#dbeafe';
+        pill.style.color      = '#1d4ed8';
+    } else {
+        pill.innerHTML = '⏸ Auto-refresh <b>nonaktif</b>';
+        pill.style.background = '#fee2e2';
+        pill.style.color      = '#dc2626';
+    }
 }
 
 // Cek sesi — jika sudah login langsung mulai, jika belum tampilkan overlay login
@@ -910,6 +1043,202 @@ if (checkSession()) {
     startApp();
 }
 // Jika belum login, overlay tetap tampil dan startApp dipanggil setelah doLogin() berhasil
+
+
+function openModal(id){
+    const m=document.getElementById(id);
+    if(m){m.style.display='flex';}
+}
+function closeModal(id){
+    const m=document.getElementById(id);
+    if(m){m.style.display='none';}
+}
+// Tutup modal saat klik overlay
+document.addEventListener('click',function(e){
+    if(e.target.classList.contains('modal-overlay')) closeModal(e.target.id);
+});
+
+/* ══ INSTRUKSI TES (global) ══ */
+const INSTR_BASE      = 'https://cipta.my.id/psikotest/simpel/';
+const INSTR_WHO_BASE  = 'https://cipta.my.id/who1/';
+// ═══════════════════════════════════════════════════════════════
+// KONFIGURASI SUBTES INSTRUKSI
+// active : true = tampil di popup | false = disembunyikan
+// alias  : label tombol yang muncul (kosong '' = pakai id asli)
+// ═══════════════════════════════════════════════════════════════
+const INSTR_ALL_CONFIG = [
+  {id:'apm0',   alias:'APM0',   active:false,  dataUrl:INSTR_BASE+'apm0.txt'},
+  {id:'apm1',   alias:'APM1',   active:false,  dataUrl:INSTR_BASE+'apm1.txt'},
+  {id:'apm1a',  alias:'APM1a',  active:false,  dataUrl:INSTR_BASE+'apm1a.txt'},
+  {id:'apm1b',  alias:'APM1b',  active:false,  dataUrl:INSTR_BASE+'apm1b.txt'},
+  {id:'apm2',   alias:'APM2',   active:false,  dataUrl:INSTR_BASE+'apm2.txt'},
+  {id:'apm2a',  alias:'APM2a',  active:false,  dataUrl:INSTR_BASE+'apm2a.txt'},
+  {id:'apm2b',  alias:'APM2b',  active:false,  dataUrl:INSTR_BASE+'apm2b.txt'},
+  {id:'apm14',  alias:'APM14',  active:false,  dataUrl:INSTR_BASE+'apm14.txt'},
+  {id:'cfit0',  alias:'c0',     active:false,  dataUrl:INSTR_BASE+'cfit0.txt'},
+  {id:'cfit1',  alias:'c1',     active:true,  dataUrl:INSTR_BASE+'cfit1.txt'},
+  {id:'cfit2',  alias:'c2',     active:true,  dataUrl:INSTR_BASE+'cfit2_a.txt'},
+  {id:'cfit3',  alias:'c3',     active:true,  dataUrl:INSTR_BASE+'cfit3.txt'},
+  {id:'cfit4',  alias:'c4',     active:true,  dataUrl:INSTR_BASE+'cfit4.txt'},
+  {id:'tkd3',   alias:'t3',   active:true,  dataUrl:INSTR_BASE+'tkd3.txt'},
+  {id:'tkd6',   alias:'t6',   active:true,  dataUrl:INSTR_BASE+'tkd6_a.txt'},
+  {id:'vak',   alias:'gb',   active:true,  dataUrl:INSTR_BASE+'1.txt'},
+  {id:'tkar',   alias:'tp',   active:true,  dataUrl:INSTR_BASE+'4.txt'},
+  {id:'epps',   alias:'EPPS',   active:true,  dataUrl:INSTR_BASE+'epps.txt'},
+  {id:'ist0',   alias:'i0',     active:false,  dataUrl:INSTR_BASE+'ist0.txt'},
+  {id:'ist1',   alias:'i1',     active:false,  dataUrl:INSTR_BASE+'ist1.txt'},
+  {id:'ist2',   alias:'i2',     active:false,  dataUrl:INSTR_BASE+'ist2.txt'},
+  {id:'ist3',   alias:'i3',     active:false,  dataUrl:INSTR_BASE+'ist3.txt'},
+  {id:'ist4_a', alias:'i4',     active:false,  dataUrl:INSTR_BASE+'ist4_a.txt'},
+  {id:'ist5_a', alias:'i5',     active:false,  dataUrl:INSTR_BASE+'ist5_a.txt'},
+  {id:'ist6_a', alias:'i6',     active:false,  dataUrl:INSTR_BASE+'ist6_a.txt'},
+  {id:'ist7',   alias:'i7',     active:false,  dataUrl:INSTR_BASE+'ist7.txt'},
+  {id:'ist8',   alias:'i8',     active:false,  dataUrl:INSTR_BASE+'ist8.txt'},
+  {id:'ist9',   alias:'i9',     active:false,  dataUrl:INSTR_BASE+'ist9.txt'},
+  {id:'papi',   alias:'PAPI',   active:false,  dataUrl:INSTR_BASE+'papi.txt'},
+  {id:'rmib',   alias:'RMIB',   active:true,  dataUrl:INSTR_BASE+'rmib.txt'}
+];
+
+let _instrPaketCache = {};
+let _instrDataCache  = {};
+
+// Buka modal instruksi tanpa token (tampilkan semua subtes dari INSTR_ALL_CONFIG)
+function openInstruksiModalGlobal() {
+    document.getElementById('instrTokenLabel').textContent = 'Lihat instruksi per subtes';
+    document.getElementById('instrSubtesLoading').style.display = 'none';
+    document.getElementById('instrDetail').style.display       = 'none';
+    document.getElementById('instrDetailLoading').style.display = 'none';
+    document.getElementById('instrDetailError').style.display   = 'none';
+    document.getElementById('instrDetailError').textContent     = '';
+
+    const btnWrap = document.getElementById('instrSubtesBtns');
+    btnWrap.innerHTML = '';
+    btnWrap.style.display = 'flex';
+
+    INSTR_ALL_CONFIG.filter(cfg => cfg.active !== false).forEach(cfg => {
+        const key   = cfg.id;
+        const label = cfg.alias || key.toUpperCase();
+        const btn = document.createElement('button');
+        btn.style.cssText = 'padding:6px 14px;border:2px solid var(--border);border-radius:8px;background:#f8fafc;cursor:pointer;font-size:12px;font-weight:700;font-family:\'Courier New\',monospace;color:var(--text);transition:all .15s;';
+        btn.textContent = label;
+        btn.dataset.key = key;
+        btn.onclick = () => {
+            btnWrap.querySelectorAll('button').forEach(b => {
+                b.style.background  = '#f8fafc';
+                b.style.borderColor = 'var(--border)';
+                b.style.color       = 'var(--text)';
+            });
+            btn.style.background  = 'var(--primary)';
+            btn.style.borderColor = 'var(--primary)';
+            btn.style.color       = '#fff';
+            loadInstruksiSubtes(key, false);
+        };
+        btnWrap.appendChild(btn);
+    });
+
+    // Auto-klik pertama
+    const first = btnWrap.querySelector('button');
+    if (first) first.click();
+
+    openModal('modalInstruksi');
+}
+
+async function loadInstruksiSubtes(key, isWho) {
+    const detailEl  = document.getElementById('instrDetail');
+    const loadingEl = document.getElementById('instrDetailLoading');
+    const errorEl   = document.getElementById('instrDetailError');
+    detailEl.style.display  = 'none';
+    errorEl.style.display   = 'none';
+    errorEl.textContent     = '';
+    loadingEl.style.display = 'block';
+    try {
+        const cacheKey = (isWho ? 'who:' : '') + key;
+        let data = _instrDataCache[cacheKey] || null;
+        if (!data) {
+            const cfgEntry = INSTR_ALL_CONFIG.find(c => c.id === key);
+            const url = isWho ? INSTR_WHO_BASE + key + '.txt' : (cfgEntry?.dataUrl || INSTR_BASE + key + '.txt');
+            const raw = await (await fetch(url + '?v=' + Date.now())).json();
+            if (raw && !Array.isArray(raw) && raw.meta)      data = raw.meta;
+            else if (raw && !Array.isArray(raw))              data = raw;
+            else                                              data = {};
+            _instrDataCache[cacheKey] = data;
+        }
+        loadingEl.style.display = 'none';
+        renderInstruksiDetail(data, key);
+    } catch(e) {
+        loadingEl.style.display = 'none';
+        errorEl.textContent = '⚠ Gagal memuat instruksi untuk "' + key + '": ' + e.message;
+        errorEl.style.display = 'block';
+    }
+}
+
+function renderInstruksiDetail(data, key) {
+    const detailEl = document.getElementById('instrDetail');
+    const titleEl  = document.getElementById('instrDetailTitle');
+    const instrBox = document.getElementById('instrDetailInstrBox');
+    const instrEl  = document.getElementById('instrDetailInstr');
+    const exBlock  = document.getElementById('instrDetailExBlock');
+    const imgTop   = document.getElementById('instrDetailImgTop');
+    const imgBot   = document.getElementById('instrDetailImgBot');
+    const exNoteEl = document.getElementById('instrDetailExNote');
+    const noneEl   = document.getElementById('instrDetailNone');
+    instrBox.style.display = 'none'; exBlock.style.display = 'none';
+    imgTop.style.display = 'none';   imgBot.style.display = 'none';
+    exNoteEl.style.display = 'none'; noneEl.style.display = 'none';
+    const rawTitle = data.title || key.toUpperCase();
+    titleEl.textContent = rawTitle.replace(/\s*[—–-].*$/, '').trim();
+    const instrText = data.instructions || data.desc || data.description || '';
+    if (instrText.trim()) { instrEl.textContent = instrText; instrBox.style.display = 'block'; }
+    const hasImgTop = !!(data.exImgTop || data.exImgTop1);
+    const hasImgBot = !!(data.exImgBottom || data.exImgBot);
+    const hasExNote = !!(data.exNote && data.exNote.trim());
+    if (hasImgTop || hasImgBot || hasExNote) {
+        exBlock.style.display = 'block';
+        if (hasImgTop) { imgTop.src = data.exImgTop || data.exImgTop1; imgTop.style.display = 'block'; }
+        if (hasImgBot) { imgBot.src = data.exImgBottom || data.exImgBot; imgBot.style.display = 'block'; }
+        if (hasExNote) { exNoteEl.textContent = data.exNote; exNoteEl.style.display = 'block'; }
+    }
+    if (!instrText.trim() && !hasImgTop && !hasImgBot && !hasExNote) noneEl.style.display = 'block';
+    detailEl.style.display = 'block';
+}
+
 </script>
+
+<!-- ══ MODAL INSTRUKSI TES ══ -->
+<div class="modal-overlay" id="modalInstruksi" style="z-index:10300;">
+  <div class="modal-box" style="max-width:640px;width:96%;max-height:90vh;overflow-y:auto;">
+    <button class="modal-close" onclick="closeModal('modalInstruksi')">×</button>
+    <h2 style="font-size:16px;margin-bottom:4px;">📋 Instruksi Tes</h2>
+    <div id="instrTokenLabel" style="font-size:11px;font-family:'Courier New',monospace;color:var(--muted);margin-bottom:14px;"></div>
+    <div id="instrSubtesLoading" style="font-size:13px;color:var(--muted);padding:10px 0;">⏳ Memuat daftar subtes...</div>
+    <div id="instrSubtesBtns" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;"></div>
+    <div id="instrDetail" style="display:none;">
+      <div style="border-top:2px solid var(--border);padding-top:16px;">
+        <div id="instrDetailTitle" style="font-size:15px;font-weight:700;color:var(--primary);margin-bottom:12px;"></div>
+        <div id="instrDetailInstrBox" style="background:#eff6ff;border-left:4px solid var(--primary);border-radius:8px;padding:14px 18px;margin-bottom:16px;display:none;">
+          <div style="font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin-bottom:8px;">📋 Instruksi Pengerjaan</div>
+          <p id="instrDetailInstr" style="font-size:.92em;line-height:1.75;color:var(--text);white-space:pre-line;"></p>
+        </div>
+        <div id="instrDetailExBlock" style="margin-bottom:16px;display:none;">
+          <div style="font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;">📖 Contoh Soal &amp; Jawaban</div>
+          <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+            <img id="instrDetailImgTop" src="" alt="Contoh Atas" style="max-width:100%;border-radius:10px;border:2px solid var(--border);display:none;">
+            <img id="instrDetailImgBot" src="" alt="Contoh Bawah" style="max-width:100%;border-radius:10px;border:2px solid var(--border);display:none;">
+          </div>
+          <div id="instrDetailExNote" style="margin-top:12px;padding:12px 16px;background:#f8fafc;border-radius:8px;font-size:.87em;line-height:1.75;color:var(--muted);white-space:pre-line;display:none;"></div>
+        </div>
+        <div id="instrDetailNone" style="text-align:center;padding:20px;color:var(--muted);font-size:.88em;display:none;">
+          Subtes ini tidak memiliki instruksi awal (langsung tes).
+        </div>
+      </div>
+    </div>
+    <div id="instrDetailLoading" style="text-align:center;padding:20px;color:var(--muted);font-size:.88em;display:none;">⏳ Memuat instruksi...</div>
+    <div id="instrDetailError" style="text-align:center;padding:16px;color:#dc2626;font-size:.88em;display:none;"></div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end;">
+      <button class="btn btn-outline" onclick="closeModal('modalInstruksi')" style="width:auto;padding:8px 20px;">Tutup</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
