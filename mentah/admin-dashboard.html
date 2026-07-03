@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Kendali Pusat Admin - PT Lidan Indah Abadi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+    <!-- HEADER ADMIN -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-lg font-black text-lg tracking-wider">
+                    LIDAN
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-wide uppercase">Pusat Kendali Administrasi</h1>
+                    <p class="text-[10px] text-slate-400">Sistem Manajemen Kemitraan & Validasi Psikodiagnostik</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                <i class="fa-solid fa-user-shield text-amber-400 text-sm"></i>
+                <span class="text-xs font-semibold">Administrator Utama</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- RINGKASAN METRIK NASIONAL (AGREGAT) -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Mitra Aktif</p>
+                    <p class="text-2xl font-bold text-slate-900 mt-1">42 <span class="text-xs font-normal text-gray-500">Akun</span></p>
+                </div>
+                <div class="p-3 bg-slate-100 rounded-lg text-slate-700 hidden sm:block">
+                    <i class="fa-solid fa-id-card-alt text-xl"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Akumulasi Peserta</p>
+                    <p class="text-2xl font-bold text-indigo-600 mt-1">1,150 <span class="text-xs font-normal text-gray-500">Orang</span></p>
+                </div>
+                <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600 hidden sm:block">
+                    <i class="fa-solid fa-users text-xl"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Antrean Validasi</p>
+                    <p class="text-2xl font-bold text-amber-600 mt-1">8 <span class="text-xs font-normal text-gray-500">Berkas</span></p>
+                </div>
+                <div class="p-3 bg-amber-50 rounded-lg text-amber-600 hidden sm:block">
+                    <i class="fa-solid fa-file-medical text-xl"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Kupon Terdistribusi</p>
+                    <p class="text-2xl font-bold text-emerald-600 mt-1">340 <span class="text-xs font-normal text-gray-500">Unit</span></p>
+                </div>
+                <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600 hidden sm:block">
+                    <i class="fa-solid fa-receipt text-xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- UTAMA: TABEL AUDIT MITRA & DATA PESERTA -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="font-bold text-gray-900 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-tree text-indigo-500"></i>
+                        Direktori Data Kemitraan & Afiliasi Peserta Tes
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-0.5">Pemantauan silang kuota kupon aset, nama peserta di bawah mitra, dan status berkas psikodiagnostik.</p>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Cari nama mitra/peserta..." class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-indigo-500 w-full sm:w-64">
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-600 uppercase text-[11px] tracking-wider border-b border-gray-200">
+                            <th class="py-3 px-4 font-semibold">Informasi Utama Mitra</th>
+                            <th class="py-3 px-4 font-semibold">Sisa Aset Kupon</th>
+                            <th class="py-3 px-4 font-semibold">Peserta Terbimbing</th>
+                            <th class="py-3 px-4 font-semibold">Status Validasi Berkas Terakhir</th>
+                            <th class="py-3 px-4 font-semibold text-center">Tindakan Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        
+                        <!-- DATA BARIS MITRA 1 -->
+                        <tr class="bg-white hover:bg-slate-50/50 transition">
+                            <td class="py-4 px-4">
+                                <div class="font-bold text-gray-900">Budi Setiawan, S.Psi</div>
+                                <div class="text-[10px] text-gray-400 mt-0.5">ID: #0426 &bull; Medan, Sumut</div>
+                            </td>
+                            <td class="py-4 px-4 font-semibold text-indigo-600">7 Kupon</td>
+                            <td class="py-4 px-4 text-xs text-gray-700">
+                                <ul class="list-disc list-inside space-y-0.5">
+                                    <li>Ani Wijaya <span class="text-amber-500 font-medium">(Belum Tes)</span></li>
+                                    <li>Rian Putra <span class="text-blue-500 font-medium">(Selesai Ujian)</span></li>
+                                    <li>Siti Aminah <span class="text-emerald-500 font-medium">(Selesai Terkirim)</span></li>
+                                </ul>
+                            </td>
+                            <td class="py-4 px-4">
+                                <span class="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-200 text-[11px] px-2 py-0.5 rounded font-medium">
+                                    <i class="fa-solid fa-clock-rotate-left text-[10px]"></i> Butuh 1 Validasi (Rian Putra)
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <button class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-3 py-1.5 rounded shadow-sm transition">
+                                    Periksa Berkas
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- DATA BARIS MITRA 2 -->
+                        <tr class="bg-white hover:bg-slate-50/50 transition">
+                            <td class="py-4 px-4">
+                                <div class="font-bold text-gray-900">Zulkhair Amanda, M.Psi</div>
+                                <div class="text-[10px] text-gray-400 mt-0.5">ID: #0391 &bull; Binjai, Sumut</div>
+                            </td>
+                            <td class="py-4 px-4 font-semibold text-indigo-600">0 Kupon <span class="text-[10px] text-rose-500 font-bold block">(Habis)</span></td>
+                            <td class="py-4 px-4 text-xs text-gray-700">
+                                <ul class="list-disc list-inside space-y-0.5">
+                                    <li>Ahmad Dhani <span class="text-emerald-500 font-medium">(Selesai Terkirim)</span></li>
+                                </ul>
+                            </td>
+                            <td class="py-4 px-4">
+                                <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] px-2 py-0.5 rounded font-medium">
+                                    <i class="fa-solid fa-circle-check text-[10px]"></i> Seluruh Berkas Bersih
+                                </span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold px-3 py-1.5 rounded transition">
+                                    Lihat Riwayat
+                                </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- PAGINATION / KENDALI HALAMAN TABEL -->
+            <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
+                <div>Menampilkan 2 dari 42 data mitra terdaftar</div>
+                <div class="flex gap-1">
+                    <button class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 transition">Sebelumnya</button>
+                    <button class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 transition">Selanjutnya</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
