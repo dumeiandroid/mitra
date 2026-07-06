@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!-- ================= SEO ================= -->
+<title>Pelatihan Tester Digital & Praktek Mandiri — Lidan Psikologi</title>
+<meta name="description" content="Program gratis untuk mahasiswa & alumni S1 Psikologi: belajar mengelola tes psikologi digital (IQ, minat bakat, dan lainnya), dapat sertifikat, lalu langsung praktik mandiri melayani klien sendiri bersama Lidan Psikologi.">
+<meta name="keywords" content="pelatihan tester digital, praktek mandiri psikologi, mitra lidan psikologi, tes psikologi online, tes IQ digital, tes minat bakat, kemitraan psikotes Medan, psikologi digital">
+<meta name="author" content="Lidan Psikologi">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mitra.lidan.co.id/tutorial">
+
+<!-- ================= Open Graph ================= -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lidan Psikologi">
+<meta property="og:locale" content="id_ID">
+<meta property="og:url" content="https://mitra.lidan.co.id/tutorial">
+<meta property="og:title" content="Pelatihan Tester Digital & Praktek Mandiri — Lidan Psikologi">
+<meta property="og:description" content="Gratis, dapat sertifikat, dan langsung bisa praktik mandiri tes psikologi digital (IQ, minat bakat, dll) bareng Lidan Psikologi.">
+<meta property="og:image" content="https://mitra.lidan.co.id/gambar/digital-tester.jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pelatihan Tester Digital & Praktek Mandiri — Lidan Psikologi">
+
+<!-- ================= Twitter Card ================= -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pelatihan Tester Digital & Praktek Mandiri — Lidan Psikologi">
+<meta name="twitter:description" content="Belajar gratis mengelola tes psikologi digital, dapat sertifikat, dan langsung praktik mandiri.">
+<meta name="twitter:image" content="https://placehold.co/1200x630/3730a3/ffffff?text=Pelatihan+Tester+Digital+%26+Praktek+Mandiri">
+
+<link rel="icon" href="https://placehold.co/64x64/3730a3/ffffff?text=L">
+
+<!-- ================= Structured Data (HowTo) ================= -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Cara Ikut Pelatihan Tester Digital & Praktek Mandiri Lidan Psikologi",
+  "description": "Langkah pendaftaran program Pelatihan Tester Digital & Praktek Mandiri dan cara memakai Dashboard Mitra di Lidan Psikologi.",
+  "step": [
+    {"@type":"HowToStep","name":"Isi formulir pendaftaran mitra","url":"https://mitra.lidan.co.id/tutorial#pendaftaran"},
+    {"@type":"HowToStep","name":"Simpan username dan password","url":"https://mitra.lidan.co.id/tutorial#pendaftaran"},
+    {"@type":"HowToStep","name":"Hubungi Admin untuk aktivasi akun","url":"https://mitra.lidan.co.id/tutorial#pendaftaran"},
+    {"@type":"HowToStep","name":"Login ke Dashboard Mitra","url":"https://mitra.lidan.co.id/tutorial#mitra"},
+    {"@type":"HowToStep","name":"Registrasi peserta dan terbitkan tautan ujian","url":"https://mitra.lidan.co.id/tutorial#mitra"}
+  ]
+}
+</script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#1a1533;
+    --indigo:#4338ca;
+    --indigo-deep:#1e1650;
+    --violet:#7c3aed;
+    --gold:#d4af37;
+    --gold-light:#f3d78b;
+    --silver:#cbd5e1;
+    --silver-light:#f1f5f9;
+    --silver-deep:#94a3b8;
+    --amber:#f59e0b;
+    --paper:#faf9fc;
+    --line:#e8e5fb;
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',ui-sans-serif,system-ui;background:var(--paper);color:var(--ink);}
+  h1,h2,h3,.display{font-family:'Manrope',ui-sans-serif,system-ui;}
+  .step-num{
+    font-family:'Manrope',sans-serif; font-weight:800; font-size:.72rem;
+    color:#fff; background:var(--indigo); width:28px;height:28px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    box-shadow: 0 0 0 2px rgba(203,213,225,.6);
+  }
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;}
+  details.step > summary{list-style:none;cursor:pointer;}
+  details.step > summary::-webkit-details-marker{display:none;}
+  details.step[open] .chevron{transform:rotate(180deg);}
+  .chevron{transition:transform .2s ease;}
+  a:focus-visible, button:focus-visible, summary:focus-visible{outline:3px solid var(--amber); outline-offset:2px; border-radius:6px;}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
+
+  /* ===== Modern digital hero ===== */
+  .hero-mesh{
+    position:relative; overflow:hidden;
+    background:
+      radial-gradient(60% 80% at 85% -10%, rgba(124,58,237,.55), transparent 60%),
+      radial-gradient(50% 60% at 5% 10%, rgba(34,211,238,.28), transparent 60%),
+      linear-gradient(160deg,var(--indigo-deep) 0%, var(--indigo) 60%, #2c1f7a 100%);
+  }
+  .hero-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size:34px 34px;
+    mask-image: radial-gradient(80% 70% at 60% 20%, black, transparent);
+    -webkit-mask-image: radial-gradient(80% 70% at 60% 20%, black, transparent);
+  }
+  .glass-chip{
+    background:rgba(255,255,255,.08); border:1px solid rgba(203,213,225,.35);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .glow-btn{ box-shadow: 0 10px 30px -8px rgba(212,175,55,.5); }
+  .pulse-dot{
+    width:7px;height:7px;border-radius:999px;background:#34d399;position:relative;flex-shrink:0;
+  }
+  .pulse-dot::after{
+    content:'';position:absolute;inset:-4px;border-radius:999px;background:#34d399;opacity:.5;
+    animation:pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse{0%{transform:scale(.6);opacity:.6;}100%{transform:scale(2.4);opacity:0;}}
+  .float-card{animation:floaty 5s ease-in-out infinite;}
+  .float-card.delay{animation-delay:1.4s;}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  @media (prefers-reduced-motion: reduce){.pulse-dot::after{animation:none;} .float-card{animation:none;}}
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- ================= HEADER ================= -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-[var(--line)]">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="bg-[var(--indigo)] text-white w-9 h-9 rounded-lg flex items-center justify-center font-black text-sm tracking-wide">LI</div>
+      <div class="leading-tight">
+        <p class="text-xs font-extrabold uppercase tracking-wide text-[var(--indigo)]">Lidan Psikologi</p>
+        <p class="text-[10px] text-gray-400 -mt-0.5">Pelatihan Tester Digital & Praktek Mandiri</p>
+      </div>
+    </div>
+    <a href="https://wa.me/6285159601400" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-2 text-xs font-semibold text-[var(--indigo)] border border-[var(--line)] hover:bg-indigo-50 px-3.5 py-2 rounded-full transition">
+      <i class="fa-brands fa-whatsapp text-emerald-500"></i> Bantuan Admin
+    </a>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero-mesh text-white relative">
+  <div class="hero-grid"></div>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-14 pb-12 sm:pt-20 sm:pb-16 relative">
+    <div class="grid md:grid-cols-[1.25fr_.9fr] gap-10 items-center">
+
+      <div>
+        <span class="glass-chip inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] px-3 py-1.5 rounded-full text-indigo-50">
+          <span class="pulse-dot"></span> 100% Online & Gratis · Lidan Psikologi
+        </span>
+
+        <h1 class="display font-extrabold text-3xl sm:text-4xl md:text-[2.75rem] mt-5 leading-[1.12]">
+          Siap Punya Pengalaman Kerja Nyata di Bidang Psikologi?
+        </h1>
+
+        <p class="text-indigo-100 text-sm sm:text-base mt-4 max-w-xl leading-relaxed">
+          Ikut <strong class="text-white">Pelatihan Tester Digital & Praktek Mandiri</strong> dari Lidan Psikologi — gratis dan terbuka untuk mahasiswa maupun alumni S1 Psikologi. Kamu nggak perlu menunggu lulus dulu, cukup sudah menyelesaikan mata kuliah alat tes psikologi, kamu sudah bisa langsung praktik mandiri: manfaatkan relasimu sendiri <em>(kepala sekolah, dosen, bimbel, dan lainnya)</em> untuk mendapatkan klien tes. Kamu yang menjalankan tesnya, sementara analisis & laporan resmi psikogram tetap ditangani Psikolog kami — jadi hasilnya tetap valid dan terpercaya.
+        </p>
+
+        <div class="flex flex-wrap gap-3 mt-7">
+          <a href="https://mitra.lidan.co.id/" target="_blank" rel="noopener" class="glow-btn bg-gradient-to-r from-[var(--gold-light)] to-[var(--gold)] text-[#1e1650] font-bold text-sm px-5 py-3 rounded-xl hover:brightness-110 transition inline-flex items-center gap-2">
+            <i class="fa-solid fa-rocket"></i> Daftar Gratis Sekarang
+          </a>
+          <a href="#mitra" class="glass-chip text-white font-bold text-sm px-5 py-3 rounded-xl hover:bg-white/15 transition inline-flex items-center gap-2">
+            <i class="fa-solid fa-arrow-down"></i> Lihat Cara Kerja Dashboard
+          </a>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-[11px] sm:text-xs text-indigo-100/90 font-medium">
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-certificate text-[var(--gold)]"></i> Dapat sertifikat pelatihan</span>
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-[var(--gold)]"></i> Laporan divalidasi Psikolog resmi</span>
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-laptop text-slate-300"></i> Semua serba digital & online</span>
+        </div>
+      </div>
+
+      <!-- Visual: floating digital test chips -->
+      <div class="hidden md:block relative h-72">
+        <div class="float-card absolute top-0 right-4 glass-chip rounded-2xl p-4 w-56 shadow-2xl">
+          <div class="flex items-center gap-2 text-xs font-bold text-white"><i class="fa-solid fa-brain text-slate-300"></i> Tes IQ Digital</div>
+          <div class="mt-3 h-1.5 rounded-full bg-white/15 overflow-hidden"><div class="h-full w-4/5 bg-gradient-to-r from-slate-300 to-slate-100 rounded-full"></div></div>
+          <p class="text-[10px] mt-2"><span class="text-[var(--gold-light)] font-semibold">Hasil dianalisis langsung oleh Psikolog ahli</span></p>
+        </div>
+        <div class="float-card delay absolute top-28 left-0 glass-chip rounded-2xl p-4 w-52 shadow-2xl">
+          <div class="flex items-center gap-2 text-xs font-bold text-white"><i class="fa-solid fa-chart-simple text-slate-300"></i> Minat & Bakat</div>
+          <div class="mt-3 flex gap-1.5">
+            <div class="h-8 w-3 rounded bg-white/15"></div><div class="h-10 w-3 rounded bg-white/25"></div><div class="h-6 w-3 rounded bg-white/15"></div><div class="h-12 w-3 rounded-full bg-gradient-to-t from-slate-300 to-slate-100"></div><div class="h-7 w-3 rounded bg-white/15"></div>
+          </div>
+        </div>
+        <div class="float-card absolute bottom-0 right-10 glass-chip rounded-2xl p-4 w-48 shadow-2xl" style="border-color:rgba(212,175,55,.4);">
+          <div class="flex items-center gap-2 text-xs font-bold text-white"><i class="fa-solid fa-file-shield text-[var(--gold)]"></i> Psikogram Resmi</div>
+          <p class="text-[10px] mt-2"><span class="text-[var(--gold-light)] font-semibold">Dianalisis & disahkan Psikolog ahli kami</span></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Journey strip -->
+  <div class="border-t border-white/10 bg-black/15 relative">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-2 sm:gap-4 overflow-x-auto text-[11px] sm:text-xs font-semibold text-indigo-100 whitespace-nowrap">
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-1 text-slate-300"></i> Daftar</span>
+      <i class="fa-solid fa-angle-right opacity-40"></i>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-2 text-slate-300"></i> Tunggu Aktivasi</span>
+      <i class="fa-solid fa-angle-right opacity-40"></i>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-3 text-slate-300"></i> Login Dashboard</span>
+      <i class="fa-solid fa-angle-right opacity-40"></i>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-4 text-slate-300"></i> Daftarkan Peserta</span>
+      <i class="fa-solid fa-angle-right opacity-40"></i>
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle-5 text-slate-300"></i> Kelola Jadwal & Laporan</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NAVIGASI CEPAT (loncat halaman, tidak menyembunyikan apapun) ================= -->
+<div class="sticky top-16 z-40 bg-[var(--paper)]/95 backdrop-blur border-b border-[var(--line)]">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4 text-xs sm:text-sm">
+    <span class="text-gray-400 font-semibold shrink-0">Lompat ke:</span>
+    <a href="#pendaftaran" class="font-bold text-[var(--indigo)] underline underline-offset-2">① Cara Daftar</a>
+    <a href="#mitra" class="font-bold text-[var(--indigo)] underline underline-offset-2">② Cara Pakai Dashboard</a>
+  </div>
+</div>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-16">
+
+<!-- ======================================================= -->
+<!-- ================= BAGIAN 1: PENDAFTARAN =============== -->
+<!-- ======================================================= -->
+<section id="pendaftaran" class="scroll-mt-32">
+
+  <div class="flex items-center gap-3 mb-8">
+    <span class="step-num !w-9 !h-9 !text-sm !rounded-xl">1</span>
+    <div>
+      <h2 class="display text-2xl sm:text-3xl font-extrabold">Cara Mendaftar Jadi Mitra</h2>
+      <p class="text-sm text-gray-500 mt-1">Pendaftaran dilakukan di <a href="https://mitra.lidan.co.id/" target="_blank" rel="noopener" class="text-[var(--indigo)] font-semibold underline underline-offset-2">mitra.lidan.co.id</a>. Prosesnya singkat, sekitar 3–5 menit.</p>
+    </div>
+  </div>
+
+  <!-- Syarat -->
+  <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-8">
+    <h3 class="text-sm font-bold text-amber-900 flex items-center gap-2 mb-2"><i class="fa-solid fa-graduation-cap"></i> Syarat Sebelum Mendaftar</h3>
+    <ul class="text-xs sm:text-sm text-amber-900 leading-relaxed space-y-1.5 list-disc list-inside">
+      <li>Sarjana Psikologi atau Mahasiswa Psikologi</li>
+      <li>Sudah pernah mengikuti mata kuliah penggunaan alat tes psikologi secara manual</li>
+      <li>Sudah mengikuti pelatihan digital tes di Lidan Psikologi</li>
+    </ul>
+    <p class="text-xs text-amber-800 mt-3">Belum pernah pelatihan? Tanyakan jadwalnya dulu ke Admin sebelum mendaftar, supaya akun Anda tidak lama menunggu aktivasi.</p>
+    <a href="https://wa.me/6285159601400?text=Halo%20Admin%2C%20saya%20ingin%20menanyakan%20jadwal%20pelatihan%20digital%20tes%20di%20Lidan%20Psikologi." target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs px-4 py-2.5 rounded-lg mt-3 transition">
+      <i class="fa-brands fa-whatsapp"></i> Tanya Jadwal Pelatihan
+    </a>
+  </div>
+
+  <!-- Steps -->
+  <div class="space-y-3">
+
+    <details class="step card p-5" open>
+      <summary class="flex items-center gap-3">
+        <span class="step-num">1</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Buka halaman pendaftaran</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        Kunjungi <a href="https://mitra.lidan.co.id/" target="_blank" rel="noopener" class="text-[var(--indigo)] font-semibold underline">mitra.lidan.co.id</a> dari HP atau laptop. Anda akan melihat halaman "Formulir Pengajuan Mitra".
+        <img src="https://mitra.lidan.co.id/gambar/pendaftaran.png">
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">2</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Isi data diri Anda</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p class="mb-2">Lengkapi kolom berikut dengan data yang benar dan aktif:</p>
+        <ul class="list-disc list-inside space-y-1">
+          <li>Nama Lengkap & Gelar</li>
+          <li>Nomor WhatsApp aktif</li>
+          <li>Alamat email kerja</li>
+          <li>Kata sandi akun (minimal 6 karakter) + konfirmasi kata sandi</li>
+        </ul>
+        <p class="mt-2">Centang kotak persetujuan Kode Etik Integritas Alat Ukur di bagian bawah formulir, lalu klik <strong>"Kirim Pengajuan & Aktifkan Workstation"</strong>.</p>
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">3</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Simpan Username & Password</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Setelah berhasil mengirim, sistem menampilkan <strong>Username</strong> (dibuat otomatis), <strong>Password</strong>, dan <strong>ID Mitra</strong> Anda.</p>
+        <div class="bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3 py-2.5 rounded-lg mt-3 flex items-start gap-2">
+          <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+          <span>Wajib dicatat atau di-screenshot sekarang juga. Data ini tidak dikirim ulang secara otomatis.</span>
+        </div>
+        <img src="https://placehold.co/900x460/eef2ff/3730a3?text=Username+%2F+Password+%2F+ID+Mitra" alt="Contoh tampilan username dan password setelah daftar" class="w-full rounded-xl border border-[var(--line)] mt-4">
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">4</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Tunggu aktivasi dari Admin</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Status akun Anda sekarang <span class="font-semibold text-amber-600">Menunggu Aktivasi</span>. Hubungi Admin lewat WhatsApp untuk konfirmasi bahwa Anda sudah memenuhi syarat pelatihan, agar akun segera diaktifkan.</p>
+        <a href="https://wa.me/6285159601400" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs px-4 py-2.5 rounded-lg mt-3 transition">
+          <i class="fa-brands fa-whatsapp"></i> Hubungi Admin
+        </a>
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">5</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Login setelah akun aktif</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        Begitu Admin mengaktifkan akun, Anda bisa langsung masuk ke halaman <strong>Pusat Kerja Mitra</strong> menggunakan username & password tadi.
+        <a href="#mitra" class="text-[var(--indigo)] font-semibold underline underline-offset-2 block mt-2">Lanjut ke panduan Dashboard Mitra →</a>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ======================================================= -->
+<!-- ================= PANEL: MITRA / DASHBOARD =========== -->
+<!-- ======================================================= -->
+<section id="mitra" class="scroll-mt-32 border-t border-[var(--line)] pt-16">
+
+  <div class="flex items-center gap-3 mb-8">
+    <span class="step-num !w-9 !h-9 !text-sm !rounded-xl">2</span>
+    <div>
+      <h2 class="display text-2xl sm:text-3xl font-extrabold">Cara Pakai Dashboard Mitra</h2>
+      <p class="text-sm text-gray-500 mt-1">Halaman ini bernama <strong>"Pusat Kerja Mitra – Lidan Psikologi"</strong>, untuk peran <strong>Digital Tester &amp; Praktek Mandiri</strong>. Gunakan tautan dan akun yang diberikan setelah akun Anda aktif.</p>
+      <span class="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 text-[var(--indigo)] border border-indigo-100 px-2.5 py-1 rounded-full">Posisi: Digital Tester & Praktek Mandiri</span>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+
+    <details class="step card p-5" open>
+      <summary class="flex items-center gap-3">
+        <span class="step-num">1</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Login ke Pusat Kerja Mitra</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Masukkan Username dan Password hasil pendaftaran. Centang "Ingat saya di perangkat ini" bila ingin tetap login di HP Anda, atau klik <a href="https://mitra.lidan.co.id/mitra-dashboard" target="_blank" rel="noopener" class="text-[var(--indigo)] font-semibold underline"> <strong>"Mitra Dashboard"</strong>.</p>
+        <p class="mt-2 text-xs text-gray-400">Belum bisa login / muncul pesan syarat aktivasi? Berarti akun Anda belum diaktifkan Admin — lihat langkah 4 di panduan Pendaftaran.</p>
+        <img src="https://mitra.lidan.co.id/gambar/login-mitra.png" alt="Tampilan login dashboard mitra" class="w-full rounded-xl border border-[var(--line)] mt-4">
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">2</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Kenali kartu statistik & 2 tab utama</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p class="mb-3">Di bagian atas ada dua tab: <strong>Dashboard Mitra</strong> (halaman kerja utama) dan <strong>Monitor Peserta</strong> (pemantauan real-time).</p>
+        <div class="grid grid-cols-2 gap-2.5 text-xs">
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3"><p class="font-bold text-gray-800">Kuota Kupon Tes</p><p class="text-gray-500 mt-0.5">Sisa kupon untuk daftar peserta baru</p></div>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3"><p class="font-bold text-gray-800">Peserta Berjalan</p><p class="text-gray-500 mt-0.5">Sedang mengerjakan tes</p></div>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3"><p class="font-bold text-gray-800">Validasi Psikolog</p><p class="text-gray-500 mt-0.5">Sedang diperiksa Psikolog</p></div>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3"><p class="font-bold text-gray-800">Laporan Terkirim</p><p class="text-gray-500 mt-0.5">Sudah selesai & terkirim</p></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">3</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Daftarkan peserta & terbitkan tautan ujian</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <ol class="list-decimal list-inside space-y-1.5">
+          <li>Klik <strong>"Registrasi Peserta & Terbitkan Tautan Ujian"</strong>.</li>
+          <li>Isi nama, usia, pendidikan, nama sekolah, kota, jenis kelamin, nomor WhatsApp, dan tanggal tes peserta.</li>
+          <li>Perhatikan sisa kupon Anda — 1 pendaftaran memakai 1 kupon.</li>
+          <li>Klik <strong>"Simpan & Buat Tautan Ujian"</strong>, lalu salin tautan yang muncul dan kirimkan ke peserta.</li>
+        </ol>
+        <img src="https://placehold.co/900x520/eef2ff/3730a3?text=Form+Registrasi+Peserta" alt="Contoh form registrasi peserta tes" class="w-full rounded-xl border border-[var(--line)] mt-4">
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">4</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Isi ulang kupon layanan</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Pilih paket di bagian <strong>"Pengadaan Kupon Layanan"</strong>, lakukan pembayaran sesuai instruksi paket. Pesanan berstatus <em>"Menunggu Approval"</em> sampai Admin memverifikasi pembayaran — setelah disetujui, kupon otomatis masuk ke akun Anda. Riwayat pesanan bisa dicek kapan saja di bagian yang sama.</p>
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">5</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Baca panduan instruksi sebelum sesi tes</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Klik <strong>"Panduan Pembacaan Instruksi (Instruktur Tes)"</strong> untuk membaca naskah baku pembukaan, arahan teknis, dan penutupan sesi. Naskah ini wajib dibacakan apa adanya, tidak boleh diubah esensinya. Untuk instruksi per subtes beserta contoh soal, gunakan tombol <strong>"Buka Petunjuk Instruksi"</strong>.</p>
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">6</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Ubah jadwal & lihat Kalender Agenda</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Untuk mengubah jadwal, cari nama peserta di tabel lalu klik <strong>"Ubah Jadwal"</strong> dan pilih tanggal baru. Semua jadwal otomatis tampil di <strong>Matriks Agenda Pengujian Mandiri</strong> — geser bulan dengan tombol panah, atau klik tanggal tertentu untuk melihat detail peserta hari itu.</p>
+      </div>
+    </details>
+
+    <details class="step card p-5">
+      <summary class="flex items-center gap-3">
+        <span class="step-num">7</span>
+        <span class="font-bold text-sm sm:text-base flex-1">Pantau peserta lewat tab Monitor</span>
+        <i class="fa-solid fa-chevron-down chevron text-gray-400 text-xs"></i>
+      </summary>
+      <div class="pt-4 pl-[40px] text-sm text-gray-600 leading-relaxed">
+        <p>Klik tab <strong>"Monitor Peserta"</strong>, login memakai akun yang sama. Halaman ini menampilkan peserta aktif hari ini dan memperbarui data otomatis setiap 5 detik. Tombol <strong>"Instruksi"</strong> tersedia untuk membuka panduan tanpa berpindah halaman.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- Tip box -->
+  <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mt-8 flex items-start gap-3">
+    <i class="fa-solid fa-circle-info text-[var(--indigo)] mt-0.5"></i>
+    <p class="text-xs sm:text-sm text-indigo-900 leading-relaxed">Selalu patuhi 3 aturan wajib yang tampil di dashboard: jaga integritas alat ukur, bacakan instruksi sesuai naskah baku, dan ingat bahwa hasil akhir (Psikogram) sepenuhnya wewenang Psikolog Lidan Psikologi.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= SYARAT AKTIVASI AKUN MITRA ================= -->
+<div class="max-w-5xl mx-auto px-4 sm:px-6 pb-4">
+  <section class="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+    <h3 class="text-sm font-bold text-amber-900 mb-2 flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i>Syarat Aktivasi Akun Mitra</h3>
+    <p class="text-xs sm:text-sm text-amber-900 leading-relaxed mb-3">
+      Akun mitra hanya dapat diaktifkan untuk <strong>Sarjana Psikologi atau Mahasiswa Psikologi</strong> yang sudah pernah mengikuti mata kuliah penggunaan alat tes psikologi secara manual, serta sudah mengikuti <strong>pelatihan digital tes di Lidan Psikologi</strong>. Jika Anda belum pernah mengikuti pelatihan tersebut, silakan hubungi Admin untuk menanyakan jadwal pelatihan berikutnya.
+    </p>
+    <a href="https://wa.me/6285159601400?text=Halo%20Admin%20Lidan%20Psikologi%2C%20saya%20sudah%20pernah%20mengikuti%20mata%20kuliah%20penggunaan%20alat%20tes%20psikologi%20secara%20manual%20dan%20ingin%20menanyakan%20jadwal%20pelatihan%20digital%20tes%20di%20Lidan%20Psikologi%20agar%20akun%20mitra%20saya%20dapat%20diaktifkan.%20Mohon%20informasinya%2C%20terima%20kasih." target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-xs px-4 py-2.5 rounded-lg shadow-sm transition">
+      <i class="fa-brands fa-whatsapp"></i> Tanyakan Jadwal Pelatihan via WhatsApp
+    </a>
+  </section>
+</div>
+
+<!-- ================= VIDEO PROFIL ================= -->
+<div class="max-w-5xl mx-auto px-4 sm:px-6 pb-8">
+  <section class="rounded-2xl overflow-hidden shadow-sm" style="background:linear-gradient(135deg,var(--indigo-deep) 0%, var(--indigo) 100%);">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center p-6 sm:p-8">
+      <div class="text-white">
+        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-300 mb-2"><i class="fa-solid fa-circle-play"></i> Kenali Kami</span>
+        <h3 class="text-xl sm:text-2xl font-bold mb-3">Profil Layanan Lidan Psikologi</h3>
+        <p class="text-sm text-indigo-100 mb-5 leading-relaxed">Lihat video profil kami untuk mengenal lebih dekat tim psikolog profesional dan fasilitas lengkap yang tersedia, sekaligus mengenal alur kemitraan Lidan Psikologi.</p>
+        <button onclick="openVideoModal()" class="bg-gradient-to-r from-slate-100 to-slate-300 text-[#1e1650] hover:brightness-110 font-bold text-sm px-5 py-3 rounded-lg shadow-sm flex items-center gap-2 transition w-fit">
+          <i class="fa-solid fa-play"></i> Tonton Video Profil
+        </button>
+      </div>
+      <div class="relative rounded-xl overflow-hidden shadow-lg cursor-pointer group" onclick="openVideoModal()">
+        <img src="https://lidan.co.id/gambar/seminar-persiapan-kerja.jpeg" alt="Video Profil Lidan Psikologi" class="w-full aspect-video object-cover">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-16 h-16 rounded-full bg-black/40 border-2 border-slate-300 flex items-center justify-center group-hover:bg-black/60 transition">
+            <i class="fa-solid fa-play text-white text-xl ml-1"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= INFORMASI KONTAK ================= -->
+<section class="text-white" style="background:linear-gradient(135deg,var(--indigo-deep) 0%, var(--indigo) 100%);">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+      <div class="sm:col-span-1">
+        <h5 class="font-bold text-base mb-3 text-slate-300">Informasi Kontak</h5>
+        <p class="text-sm text-indigo-100 leading-relaxed mb-2"><i class="fa-solid fa-location-dot mr-2 text-slate-300"></i>Regus - Forum Nine<br>Jl. Imam Bonjol No. 9 Forum Nine 9th Floor<br>Medan</p>
+        <p class="text-sm text-indigo-100 mb-2"><i class="fa-solid fa-phone mr-2 text-slate-300"></i>+62 851 5960 1400</p>
+        <p class="text-sm text-indigo-100"><i class="fa-solid fa-envelope mr-2 text-slate-300"></i>info@lidan.co.id</p>
+      </div>
+      <div>
+        <h6 class="font-bold text-sm mb-3 text-slate-300">Jam Operasional</h6>
+        <p class="text-xs text-indigo-100 leading-relaxed">Senin - Jumat: 08:00-17:00<br>Sabtu: 08:00-15:00<br>Minggu: Tutup</p>
+      </div>
+      <div>
+        <h6 class="font-bold text-sm mb-3 text-slate-300">Layanan Online</h6>
+        <p class="text-xs text-indigo-100 leading-relaxed">24/7 untuk tes online<br>Konseling online by appointment<br>WhatsApp support</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-gray-900 text-gray-300 py-5">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+    <p class="mb-0">&copy; <span id="fYear"></span> Lidan Psikologi - Lidan Indah Abadi. Psikolog berlisensi resmi.</p>
+    <div class="flex items-center gap-4 text-sm">
+      <a href="https://wa.me/6285159601400" target="_blank" rel="noopener" class="text-gray-300 hover:text-slate-300 transition"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="#" target="_blank" rel="noopener" class="text-gray-300 hover:text-slate-300 transition"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" target="_blank" rel="noopener" class="text-gray-300 hover:text-slate-300 transition"><i class="fa-brands fa-linkedin"></i></a>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL: VIDEO PROFIL -->
+<div id="videoModal" class="fixed inset-0 z-50 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-2xl w-full overflow-hidden">
+    <div class="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+      <h3 class="font-bold text-gray-900 text-sm">Profil Layanan Lidan Psikologi</h3>
+      <button onclick="closeVideoModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="p-4">
+      <div class="relative w-full rounded-lg overflow-hidden bg-black" style="padding-top:56.25%;">
+        <iframe id="videoModalIframe" class="absolute inset-0 w-full h-full" src="" title="Profil Layanan Lidan Psikologi" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('fYear').textContent = new Date().getFullYear();
+
+  const VIDEO_PROFIL_SRC = 'https://www.youtube.com/embed/4tPQrHLjJDg?si=6SoLPDtIIRfjf1b1&autoplay=1';
+  function openVideoModal() {
+    document.getElementById('videoModalIframe').src = VIDEO_PROFIL_SRC;
+    document.getElementById('videoModal').classList.remove('hidden');
+  }
+  function closeVideoModal() {
+    document.getElementById('videoModal').classList.add('hidden');
+    document.getElementById('videoModalIframe').src = '';
+  }
+</script>
+
+</body>
+</html>
