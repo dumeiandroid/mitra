@@ -81,28 +81,28 @@
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
             <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openMetricDetail('mitraAktif')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-slate-300 transition">
                     <div>
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Mitra Aktif</p>
                         <p class="text-2xl font-bold text-slate-900 mt-1"><span id="mTotalMitra">0</span> <span class="text-xs font-normal text-gray-500">Akun</span></p>
                     </div>
                     <div class="p-3 bg-slate-100 rounded-lg text-slate-700 hidden sm:block"><i class="fa-solid fa-id-card-alt text-xl"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openMetricDetail('peserta')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-indigo-300 transition">
                     <div>
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Akumulasi Peserta</p>
                         <p class="text-2xl font-bold text-indigo-600 mt-1"><span id="mTotalPeserta">0</span> <span class="text-xs font-normal text-gray-500">Orang</span></p>
                     </div>
                     <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600 hidden sm:block"><i class="fa-solid fa-users text-xl"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openMetricDetail('antrean')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-amber-300 transition">
                     <div>
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Antrean Validasi</p>
                         <p class="text-2xl font-bold text-amber-600 mt-1"><span id="mAntrean">0</span> <span class="text-xs font-normal text-gray-500">Berkas</span></p>
                     </div>
                     <div class="p-3 bg-amber-50 rounded-lg text-amber-600 hidden sm:block"><i class="fa-solid fa-file-medical text-xl"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openMetricDetail('kupon')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-emerald-300 transition">
                     <div>
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Kupon Terdistribusi</p>
                         <p class="text-2xl font-bold text-emerald-600 mt-1"><span id="mKupon">0</span> <span class="text-xs font-normal text-gray-500">Unit</span></p>
@@ -320,6 +320,39 @@
         </div>
     </div>
 
+    <!-- MODAL: DETAIL METRIK KARTU DASHBOARD -->
+    <div id="metricDetailModal" class="fixed inset-0 z-[60] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-4xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="metricDetailIconWrap" class="p-2.5 rounded-lg"><i id="metricDetailIcon" class="fa-solid text-lg"></i></div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base" id="metricDetailTitle">Detail</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5" id="metricDetailSub"></p>
+                    </div>
+                </div>
+                <button onclick="toggleModal('metricDetailModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 border-b border-gray-200 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                <input id="metricDetailSearch" type="text" placeholder="Cari data..." oninput="renderMetricDetailTable()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs w-full sm:w-72 focus:outline-none focus:border-indigo-500">
+                <select id="metricDetailSort" onchange="renderMetricDetailTable()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs w-full sm:w-56 focus:outline-none focus:border-indigo-500 bg-white text-gray-600">
+                    <option value="">Urutkan: Default</option>
+                    <option value="mitra_asc">Nama Mitra (A-Z)</option>
+                    <option value="mitra_desc">Nama Mitra (Z-A)</option>
+                </select>
+            </div>
+            <div class="overflow-auto flex-1">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead class="sticky top-0 bg-gray-100 z-10">
+                        <tr id="metricDetailHeadRow" class="text-gray-600 uppercase text-[11px] tracking-wider border-b border-gray-200"></tr>
+                    </thead>
+                    <tbody id="metricDetailBody" class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500" id="metricDetailFooter"></div>
+        </div>
+    </div>
+
     <script>
         const API_BASE = 'https://lidan-co-id.pages.dev/api/contacts_filter_dinamis6';
         const T_MITRA = 'mitra_member';
@@ -411,6 +444,167 @@
             document.getElementById('mAntrean').textContent = pesertaData.filter(p => pesertaBio(p).status_tes === 'selesai_ujian').length;
             const totalKupon = mitraData.reduce((sum, m) => sum + (parseInt(m.x_06) || 0), 0);
             document.getElementById('mKupon').textContent = totalKupon;
+        }
+
+        // ============ POPUP DETAIL KARTU METRIK DASHBOARD ============
+        const METRIC_CONFIG = {
+            mitraAktif: {
+                title: 'Detail Mitra Aktif',
+                icon: 'fa-id-card-alt',
+                iconCls: 'bg-slate-100 text-slate-700',
+                columns: ['Nama Mitra', 'No. WhatsApp', 'Sisa Kupon', 'Jumlah Peserta', 'Status Akun'],
+                getRows() {
+                    return mitraData.filter(m => m.x_04 === 'aktif').map(m => {
+                        const detail = mitraDetail(m);
+                        const jumlahPeserta = (pesertaByMitra[m.id_x] || []).length;
+                        return {
+                            id: m.id_x,
+                            onclick: `toggleModal('metricDetailModal'); openMitraDetail('${m.id_x}')`,
+                            searchText: `${detail.nama_lengkap || ''} ${m.x_01 || ''}`,
+                            mitraName: detail.nama_lengkap || m.x_01 || '',
+                            cells: [
+                                `<span class="font-semibold text-gray-900">${escapeHtml(detail.nama_lengkap || m.x_01)}</span><div class="text-[10px] text-gray-400">ID: #${m.id_x}</div>`,
+                                escapeHtml(detail.whatsapp || '-'),
+                                `<span class="font-semibold text-indigo-600">${m.x_05 || 0} Kupon</span>`,
+                                `${jumlahPeserta} Orang`,
+                                `<span class="text-emerald-600 font-semibold">Aktif</span>`
+                            ]
+                        };
+                    });
+                },
+                emptyText: 'Belum ada mitra aktif.',
+                footer: (n) => `Menampilkan ${n} mitra aktif`
+            },
+            peserta: {
+                title: 'Detail Akumulasi Peserta',
+                icon: 'fa-users',
+                iconCls: 'bg-indigo-50 text-indigo-600',
+                columns: ['Nama Peserta', 'Nama Mitra', 'Status Pengujian', 'Tanggal Daftar'],
+                getRows() {
+                    return pesertaData.map(p => {
+                        const bio = pesertaBio(p);
+                        const s = statusLabel(bio.status_tes);
+                        const namaMitra = mitraNamaById(p.x_18);
+                        const tgl = bio.tanggal_daftar ? new Date(bio.tanggal_daftar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                        return {
+                            id: p.id_x,
+                            onclick: `toggleModal('metricDetailModal'); openPesertaDetail('${p.id_x}')`,
+                            searchText: `${bio.bioNama || ''} ${namaMitra}`,
+                            mitraName: namaMitra || '',
+                            cells: [
+                                `<span class="font-semibold text-gray-900">${escapeHtml(bio.bioNama)}</span>`,
+                                escapeHtml(namaMitra),
+                                `<span class="${s.cls} font-semibold">${s.text}</span>`,
+                                tgl
+                            ]
+                        };
+                    });
+                },
+                emptyText: 'Belum ada peserta.',
+                footer: (n) => `Menampilkan ${n} dari ${pesertaData.length} total peserta`
+            },
+            antrean: {
+                title: 'Detail Antrean Validasi Berkas',
+                icon: 'fa-file-medical',
+                iconCls: 'bg-amber-50 text-amber-600',
+                columns: ['Nama Peserta', 'Nama Mitra', 'Status', 'Selesai Ujian'],
+                getRows() {
+                    return pesertaData.filter(p => pesertaBio(p).status_tes === 'selesai_ujian').map(p => {
+                        const bio = pesertaBio(p);
+                        const namaMitra = mitraNamaById(p.x_18);
+                        const tgl = bio.tanggal_selesai ? new Date(bio.tanggal_selesai).toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+                        return {
+                            id: p.id_x,
+                            onclick: `toggleModal('metricDetailModal'); openPesertaDetail('${p.id_x}')`,
+                            searchText: `${bio.bioNama || ''} ${namaMitra}`,
+                            mitraName: namaMitra || '',
+                            cells: [
+                                `<span class="font-semibold text-gray-900">${escapeHtml(bio.bioNama)}</span>`,
+                                escapeHtml(namaMitra),
+                                `<span class="text-orange-500 font-semibold">Menunggu Validasi</span>`,
+                                tgl
+                            ]
+                        };
+                    });
+                },
+                emptyText: 'Tidak ada berkas yang perlu divalidasi.',
+                footer: (n) => `${n} berkas menunggu validasi admin`
+            },
+            kupon: {
+                title: 'Detail Kupon Terdistribusi per Mitra',
+                icon: 'fa-receipt',
+                iconCls: 'bg-emerald-50 text-emerald-600',
+                columns: ['Nama Mitra', 'Sisa Kupon', 'Total Kupon Diterima', 'Status Akun'],
+                getRows() {
+                    return mitraData.map(m => {
+                        const detail = mitraDetail(m);
+                        const statusInfo = MITRA_STATUS_LABELS[m.x_04] || { text: m.x_04 || '-', cls: 'text-gray-500' };
+                        return {
+                            id: m.id_x,
+                            onclick: `toggleModal('metricDetailModal'); openMitraDetail('${m.id_x}')`,
+                            searchText: `${detail.nama_lengkap || ''} ${m.x_01 || ''}`,
+                            mitraName: detail.nama_lengkap || m.x_01 || '',
+                            cells: [
+                                `<span class="font-semibold text-gray-900">${escapeHtml(detail.nama_lengkap || m.x_01)}</span><div class="text-[10px] text-gray-400">ID: #${m.id_x}</div>`,
+                                `${m.x_05 || 0} Kupon`,
+                                `<span class="font-semibold text-emerald-600">${m.x_06 || 0} Kupon</span>`,
+                                `<span class="${statusInfo.cls} font-semibold">${statusInfo.text}</span>`
+                            ]
+                        };
+                    });
+                },
+                emptyText: 'Belum ada data kupon.',
+                footer: (n) => `${n} mitra terdaftar`
+            }
+        };
+
+        let activeMetricType = null;
+
+        function openMetricDetail(type) {
+            const cfg = METRIC_CONFIG[type];
+            if (!cfg) return;
+            activeMetricType = type;
+
+            document.getElementById('metricDetailTitle').textContent = cfg.title;
+            const iconWrap = document.getElementById('metricDetailIconWrap');
+            iconWrap.className = 'p-2.5 rounded-lg ' + cfg.iconCls;
+            document.getElementById('metricDetailIcon').className = 'fa-solid ' + cfg.icon + ' text-lg';
+            document.getElementById('metricDetailSearch').value = '';
+            document.getElementById('metricDetailSort').value = '';
+
+            document.getElementById('metricDetailHeadRow').innerHTML = cfg.columns.map(c => `<th class="py-3 px-4 font-semibold">${c}</th>`).join('');
+
+            renderMetricDetailTable();
+            toggleModal('metricDetailModal');
+        }
+
+        function renderMetricDetailTable() {
+            const cfg = METRIC_CONFIG[activeMetricType];
+            if (!cfg) return;
+            const search = (document.getElementById('metricDetailSearch').value || '').toLowerCase();
+            let rows = cfg.getRows();
+
+            document.getElementById('metricDetailSub').textContent = `Klik baris untuk melihat detail lengkap`;
+
+            if (search) rows = rows.filter(r => r.searchText.toLowerCase().includes(search));
+
+            const sortMode = document.getElementById('metricDetailSort').value;
+            if (sortMode === 'mitra_asc') {
+                rows = [...rows].sort((a, b) => a.mitraName.localeCompare(b.mitraName, 'id'));
+            } else if (sortMode === 'mitra_desc') {
+                rows = [...rows].sort((a, b) => b.mitraName.localeCompare(a.mitraName, 'id'));
+            }
+
+            const body = document.getElementById('metricDetailBody');
+            if (rows.length === 0) {
+                body.innerHTML = `<tr><td colspan="${cfg.columns.length}" class="py-8 text-center text-gray-400 text-sm">${cfg.emptyText}</td></tr>`;
+            } else {
+                body.innerHTML = rows.map(r => `<tr onclick="${r.onclick}" class="bg-white hover:bg-slate-50 cursor-pointer transition">
+                    ${r.cells.map(c => `<td class="py-3 px-4">${c}</td>`).join('')}
+                </tr>`).join('');
+            }
+
+            document.getElementById('metricDetailFooter').textContent = cfg.footer(rows.length);
         }
 
         function renderMitraTable(filter = '') {
