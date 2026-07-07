@@ -111,16 +111,6 @@
                 </div>
             </section>
 
-            <div class="flex items-center gap-1 mb-4 border-b border-gray-200">
-                <button id="tabBtnDirektori" onclick="switchMainTab('direktori')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 bg-white text-indigo-600 flex items-center gap-2">
-                    <i class="fa-solid fa-folder-tree"></i> Direktori Data Kemitraan
-                </button>
-                <button id="tabBtnAgenda" onclick="switchMainTab('agenda')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-transparent text-gray-500 hover:bg-gray-100 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-days"></i> Matriks Agenda Pengujian
-                </button>
-            </div>
-
-            <div id="tabPanelAgenda" class="hidden">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
                 <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -144,9 +134,7 @@
                     <div id="agendaCalendarGrid" class="grid grid-cols-7 gap-1.5"></div>
                 </div>
             </div>
-            </div>
 
-            <div id="tabPanelDirektori">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -161,33 +149,10 @@
                     </div>
                 </div>
 
-                <div id="bulkActionBar" class="hidden px-5 py-3 bg-indigo-50 border-b border-indigo-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="text-xs font-semibold text-indigo-700">
-                        <span id="bulkSelectedCount">0</span> mitra dipilih
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <button onclick="bulkSetStatus('aktif')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition">
-                            <i class="fa-solid fa-check"></i> Aktifkan
-                        </button>
-                        <button onclick="bulkSetStatus('nonaktif')" class="bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition">
-                            <i class="fa-solid fa-ban"></i> Nonaktifkan
-                        </button>
-                        <button onclick="openBulkDeleteModal()" class="bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm transition">
-                            <i class="fa-solid fa-trash"></i> Hapus
-                        </button>
-                        <button onclick="clearMitraSelection()" class="text-[11px] font-semibold text-gray-500 hover:text-gray-700 px-2">
-                            Batalkan Pilihan
-                        </button>
-                    </div>
-                </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
                             <tr class="bg-gray-100 text-gray-600 uppercase text-[11px] tracking-wider border-b border-gray-200">
-                                <th class="py-3 px-4 font-semibold w-10">
-                                    <input type="checkbox" id="selectAllMitra" onchange="toggleSelectAllMitra(this.checked)" class="w-3.5 h-3.5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                                </th>
                                 <th class="py-3 px-4 font-semibold">Informasi Utama Mitra</th>
                                 <th class="py-3 px-4 font-semibold">Sisa Aset Kupon</th>
                                 <th class="py-3 px-4 font-semibold">Peserta Terbimbing</th>
@@ -196,7 +161,7 @@
                             </tr>
                         </thead>
                         <tbody id="mitraTableBody" class="divide-y divide-gray-200">
-                            <tr><td colspan="6" class="py-8 text-center text-gray-400 text-sm">Memuat data...</td></tr>
+                            <tr><td colspan="5" class="py-8 text-center text-gray-400 text-sm">Memuat data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -204,7 +169,6 @@
                 <div class="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500">
                     <div id="paginationInfo">Menampilkan 0 dari 0 data mitra terdaftar</div>
                 </div>
-            </div>
             </div>
 
         </main>
@@ -250,73 +214,6 @@
                 <button onclick="toggleModal('agendaDayModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="p-6 overflow-y-auto space-y-2 text-sm" id="agendaDayList"></div>
-        </div>
-    </div>
-
-    <!-- MODAL: KONFIRMASI HAPUS MITRA -->
-    <div id="deleteConfirmModal" class="fixed inset-0 z-[60] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-md w-full overflow-hidden">
-            <div class="p-5 border-b border-gray-200 bg-rose-50 flex items-center justify-between">
-                <h3 class="font-bold text-rose-700 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Konfirmasi Hapus Mitra
-                </h3>
-                <button onclick="closeBulkDeleteModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="p-6 space-y-4 text-sm">
-                <p class="text-gray-700">
-                    Anda akan menghapus <span id="deleteConfirmCount" class="font-bold">0</span> data mitra berikut secara permanen. Tindakan ini <span class="font-bold text-rose-600">tidak dapat dibatalkan</span>.
-                </p>
-                <div id="deleteConfirmNames" class="max-h-32 overflow-y-auto bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs text-gray-600 space-y-1"></div>
-                <div>
-                    <label class="text-xs font-semibold text-gray-600 block mb-1.5">
-                        Ketik <span class="font-mono font-bold text-rose-600">delete</span> untuk mengonfirmasi:
-                    </label>
-                    <input id="deleteConfirmInput" type="text" oninput="validateDeleteConfirmInput()" autocomplete="off"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500"
-                        placeholder="ketik: delete">
-                </div>
-                <div class="flex justify-end gap-2 pt-1">
-                    <button onclick="closeBulkDeleteModal()" class="text-xs font-bold px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition">
-                        Batal
-                    </button>
-                    <button id="btnConfirmDelete" onclick="confirmBulkDelete()" disabled
-                        class="text-xs font-bold px-4 py-2 rounded-lg bg-rose-300 text-white cursor-not-allowed transition">
-                        Hapus Permanen
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: DETAIL BIODATA MITRA -->
-    <div id="mitraDetailModal" class="fixed inset-0 z-[60] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden">
-            <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
-                <div>
-                    <h3 class="font-bold text-gray-900 text-base" id="mitraDetailNama">Detail Biodata Mitra</h3>
-                    <p class="text-[11px] text-gray-500 mt-0.5" id="mitraDetailSub"></p>
-                </div>
-                <button onclick="toggleModal('mitraDetailModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto text-sm">
-                <dl id="mitraDetailBody" class="divide-y divide-gray-100"></dl>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: DETAIL BIODATA PESERTA -->
-    <div id="pesertaDetailModal" class="fixed inset-0 z-[60] bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden">
-            <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
-                <div>
-                    <h3 class="font-bold text-gray-900 text-base" id="pesertaDetailNama">Detail Biodata Peserta</h3>
-                    <p class="text-[11px] text-gray-500 mt-0.5" id="pesertaDetailMitra"></p>
-                </div>
-                <button onclick="toggleModal('pesertaDetailModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto text-sm">
-                <dl id="pesertaDetailBody" class="divide-y divide-gray-100"></dl>
-            </div>
         </div>
     </div>
 
@@ -426,7 +323,7 @@
             });
 
             if (rows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-400 text-sm">Tidak ada data ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-400 text-sm">Tidak ada data ditemukan.</td></tr>`;
             } else {
                 tbody.innerHTML = rows.map(m => {
                     const detail = mitraDetail(m);
@@ -438,7 +335,7 @@
                         ? `<ul class="list-disc list-inside space-y-0.5">${pesertaList.map(p => {
                               const bio = pesertaBio(p);
                               const s = statusLabel(bio.status_tes);
-                              return `<li><button type="button" onclick="openPesertaDetail('${p.id_x}')" class="text-indigo-600 hover:text-indigo-800 hover:underline font-medium text-left cursor-pointer">${escapeHtml(bio.bioNama)}</button> <span class="${s.cls} font-medium">(${s.text})</span></li>`;
+                              return `<li>${escapeHtml(bio.bioNama)} <span class="${s.cls} font-medium">(${s.text})</span></li>`;
                           }).join('')}</ul>`
                         : `<span class="text-gray-400">Belum ada peserta</span>`;
 
@@ -463,10 +360,7 @@
 
                     return `<tr class="bg-white hover:bg-slate-50/50 transition">
                         <td class="py-4 px-4">
-                            <input type="checkbox" class="mitra-row-checkbox w-3.5 h-3.5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" value="${m.id_x}" onchange="toggleSelectMitra('${m.id_x}', this.checked)" ${selectedMitraIds.has(String(m.id_x)) ? 'checked' : ''}>
-                        </td>
-                        <td class="py-4 px-4">
-                            <button type="button" onclick="openMitraDetail('${m.id_x}')" class="font-bold text-gray-900 hover:text-indigo-600 hover:underline cursor-pointer text-left">${escapeHtml(namaMitra)}</button>
+                            <div class="font-bold text-gray-900">${escapeHtml(namaMitra)}</div>
                             <div class="text-[10px] text-gray-400 mt-0.5">ID: #${m.id_x} &bull; ${escapeHtml(detail.whatsapp || '-')}</div>
                             ${akunStatus}
                             ${pesananBadge}
@@ -484,262 +378,9 @@
             }
 
             document.getElementById('paginationInfo').textContent = `Menampilkan ${rows.length} dari ${mitraData.length} data mitra terdaftar`;
-            updateBulkActionBar();
-            const selectAllBox = document.getElementById('selectAllMitra');
-            if (selectAllBox) {
-                const renderedIds = rows.map(m => String(m.id_x));
-                selectAllBox.checked = renderedIds.length > 0 && renderedIds.every(id => selectedMitraIds.has(id));
-            }
         }
 
         document.getElementById('searchMitra').addEventListener('input', (e) => renderMitraTable(e.target.value));
-
-        // ============ POPUP DETAIL BIODATA MITRA (READ-ONLY) ============
-        const MITRA_STATUS_LABELS = {
-            aktif: { text: 'Aktif', cls: 'text-emerald-600' },
-            pending: { text: 'Menunggu Aktivasi', cls: 'text-amber-600' },
-            nonaktif: { text: 'Nonaktif', cls: 'text-rose-500' }
-        };
-
-        const MITRA_FIELD_LABELS = {
-            nama_lengkap: 'Nama Lengkap',
-            whatsapp: 'No. WhatsApp',
-            email: 'Email',
-            alamat: 'Alamat',
-            kota: 'Kota',
-            institusi: 'Institusi/Instansi',
-            jabatan: 'Jabatan'
-        };
-
-        function openMitraDetail(idMitra) {
-            const m = mitraData.find(x => String(x.id_x) === String(idMitra));
-            if (!m) return;
-            const detail = mitraDetail(m);
-            const namaMitra = detail.nama_lengkap || m.x_01 || `Mitra #${m.id_x}`;
-
-            document.getElementById('mitraDetailNama').textContent = namaMitra;
-            document.getElementById('mitraDetailSub').textContent = `Username: ${m.x_01 || '-'} • ID: #${m.id_x}`;
-
-            const rows = [];
-
-            rows.push(['Username Login', escapeHtml(m.x_01 || '-')]);
-
-            const shownKeys = new Set();
-            ['nama_lengkap', 'whatsapp', 'email'].forEach(key => {
-                if (detail[key] !== undefined) {
-                    rows.push([MITRA_FIELD_LABELS[key] || key, detail[key] ? escapeHtml(String(detail[key])) : '<span class="text-gray-400 italic">- belum diisi -</span>']);
-                    shownKeys.add(key);
-                }
-            });
-            Object.keys(detail).forEach(key => {
-                if (shownKeys.has(key)) return;
-                const label = MITRA_FIELD_LABELS[key] || key;
-                rows.push([label, escapeHtml(String(detail[key]))]);
-            });
-
-            const statusInfo = MITRA_STATUS_LABELS[m.x_04] || { text: m.x_04 || '-', cls: 'text-gray-500' };
-            rows.push(['Status Akun', `<span class="${statusInfo.cls} font-semibold">${statusInfo.text}</span>`]);
-            rows.push(['Sisa Aset Kupon', `${m.x_05 || 0} Kupon`]);
-            rows.push(['Total Kupon Diterima', `${m.x_06 || 0} Kupon`]);
-
-            const body = document.getElementById('mitraDetailBody');
-            body.innerHTML = rows.map(([label, value]) => {
-                return `<div class="py-2.5 grid grid-cols-3 gap-2">
-                    <dt class="text-xs font-semibold text-gray-500 col-span-1">${label}</dt>
-                    <dd class="text-sm text-gray-800 col-span-2 break-words">${value}</dd>
-                </div>`;
-            }).join('');
-
-            toggleModal('mitraDetailModal');
-        }
-
-        // ============ POPUP DETAIL BIODATA PESERTA (READ-ONLY) ============
-        const BIODATA_FIELD_LABELS = [
-            { key: 'bioNama', label: 'Nama Lengkap' },
-            { key: 'bioUsia', label: 'Usia' },
-            { key: 'bioGender', label: 'Jenis Kelamin' },
-            { key: 'bioTelp', label: 'No. WhatsApp / Telepon' },
-            { key: 'bioPend', label: 'Pendidikan Terakhir' },
-            { key: 'bioSekolah', label: 'Asal Sekolah/Institusi' },
-            { key: 'bioKota', label: 'Kota Domisili' },
-            { key: 'tanggal_daftar', label: 'Tanggal Daftar', isDate: true },
-            { key: 'tanggal_tes', label: 'Tanggal Tes Terjadwal', isDateOnly: true },
-            { key: 'status_tes', label: 'Status Pengujian', isStatus: true },
-            { key: 'tanggal_selesai', label: 'Tanggal Selesai/Terkirim', isDate: true },
-            { key: 'catatan_validasi', label: 'Catatan Validasi Admin' }
-        ];
-
-        function formatBioValue(field, value) {
-            if (value === undefined || value === null || value === '') return '<span class="text-gray-400 italic">- belum diisi -</span>';
-            if (field.isStatus) {
-                const s = statusLabel(value);
-                return `<span class="${s.cls} font-semibold">${escapeHtml(s.text)}</span>`;
-            }
-            if (field.isDate) {
-                const d = new Date(value);
-                if (!isNaN(d)) return escapeHtml(d.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }));
-            }
-            if (field.isDateOnly) {
-                const d = new Date(value + 'T00:00:00');
-                if (!isNaN(d)) return escapeHtml(d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }));
-            }
-            return escapeHtml(String(value));
-        }
-
-        function openPesertaDetail(idPeserta) {
-            const p = pesertaData.find(x => String(x.id_x) === String(idPeserta));
-            if (!p) return;
-            const bio = pesertaBio(p);
-
-            document.getElementById('pesertaDetailNama').textContent = bio.bioNama || 'Detail Biodata Peserta';
-            document.getElementById('pesertaDetailMitra').textContent = `Token Ujian: ${p.x_01 || '-'} • Mitra: ${mitraNamaById(p.x_18)}`;
-
-            const body = document.getElementById('pesertaDetailBody');
-            body.innerHTML = BIODATA_FIELD_LABELS.map(field => {
-                return `<div class="py-2.5 grid grid-cols-3 gap-2">
-                    <dt class="text-xs font-semibold text-gray-500 col-span-1">${field.label}</dt>
-                    <dd class="text-sm text-gray-800 col-span-2 break-words">${formatBioValue(field, bio[field.key])}</dd>
-                </div>`;
-            }).join('');
-
-            toggleModal('pesertaDetailModal');
-        }
-
-        // ============ SELEKSI BARIS & AKSI MASSAL (AKTIFKAN/NONAKTIFKAN/HAPUS) ============
-        let selectedMitraIds = new Set();
-
-        function toggleSelectMitra(id, checked) {
-            const key = String(id);
-            if (checked) selectedMitraIds.add(key);
-            else selectedMitraIds.delete(key);
-            updateBulkActionBar();
-        }
-
-        function toggleSelectAllMitra(checked) {
-            document.querySelectorAll('.mitra-row-checkbox').forEach(cb => {
-                cb.checked = checked;
-                if (checked) selectedMitraIds.add(String(cb.value));
-                else selectedMitraIds.delete(String(cb.value));
-            });
-            updateBulkActionBar();
-        }
-
-        function clearMitraSelection() {
-            selectedMitraIds.clear();
-            renderMitraTable(document.getElementById('searchMitra').value);
-        }
-
-        function updateBulkActionBar() {
-            const bar = document.getElementById('bulkActionBar');
-            const countEl = document.getElementById('bulkSelectedCount');
-            if (!bar || !countEl) return;
-            const count = selectedMitraIds.size;
-            countEl.textContent = count;
-            bar.classList.toggle('hidden', count === 0);
-        }
-
-        async function bulkSetStatus(newStatus) {
-            if (selectedMitraIds.size === 0) return;
-            const ids = Array.from(selectedMitraIds);
-            const label = newStatus === 'aktif' ? 'mengaktifkan' : 'menonaktifkan';
-            if (!confirm(`Yakin ingin ${label} ${ids.length} mitra terpilih?`)) return;
-            try {
-                for (const id of ids) {
-                    await apiRequest(T_MITRA, { method: 'PUT', id, body: { x_04: newStatus } });
-                    const m = mitraData.find(x => String(x.id_x) === id);
-                    if (m) m.x_04 = newStatus;
-                }
-                selectedMitraIds.clear();
-                renderMetrics();
-                renderMitraTable(document.getElementById('searchMitra').value);
-            } catch (err) {
-                alert('Gagal memperbarui status: ' + err.message);
-            }
-        }
-
-        function openBulkDeleteModal() {
-            if (selectedMitraIds.size === 0) return;
-            const ids = Array.from(selectedMitraIds);
-            const names = ids.map(id => {
-                const m = mitraData.find(x => String(x.id_x) === id);
-                const detail = m ? mitraDetail(m) : {};
-                return m ? (detail.nama_lengkap || m.x_01 || `Mitra #${id}`) : `Mitra #${id}`;
-            });
-            document.getElementById('deleteConfirmCount').textContent = ids.length;
-            document.getElementById('deleteConfirmNames').innerHTML = names.map(n => `<div>&bull; ${escapeHtml(n)}</div>`).join('');
-            document.getElementById('deleteConfirmInput').value = '';
-            validateDeleteConfirmInput();
-            document.getElementById('deleteConfirmModal').classList.remove('hidden');
-        }
-
-        function closeBulkDeleteModal() {
-            document.getElementById('deleteConfirmModal').classList.add('hidden');
-        }
-
-        function validateDeleteConfirmInput() {
-            const input = document.getElementById('deleteConfirmInput');
-            const btn = document.getElementById('btnConfirmDelete');
-            const isValid = input.value.trim().toLowerCase() === 'delete';
-            btn.disabled = !isValid;
-            btn.classList.toggle('bg-rose-300', !isValid);
-            btn.classList.toggle('cursor-not-allowed', !isValid);
-            btn.classList.toggle('bg-rose-600', isValid);
-            btn.classList.toggle('hover:bg-rose-700', isValid);
-        }
-
-        async function confirmBulkDelete() {
-            const input = document.getElementById('deleteConfirmInput');
-            if (input.value.trim().toLowerCase() !== 'delete') return;
-            const ids = Array.from(selectedMitraIds);
-            if (ids.length === 0) { closeBulkDeleteModal(); return; }
-            const btn = document.getElementById('btnConfirmDelete');
-            btn.disabled = true;
-            btn.textContent = 'Menghapus...';
-            try {
-                for (const id of ids) {
-                    await apiRequest(T_MITRA, { method: 'DELETE', id });
-                    mitraData = mitraData.filter(x => String(x.id_x) !== id);
-                    delete pesertaByMitra[id];
-                    selectedMitraIds.delete(id);
-                }
-                closeBulkDeleteModal();
-                renderMetrics();
-                renderMitraTable(document.getElementById('searchMitra').value);
-            } catch (err) {
-                alert('Gagal menghapus mitra: ' + err.message);
-            } finally {
-                btn.textContent = 'Hapus Permanen';
-                validateDeleteConfirmInput();
-            }
-        }
-
-        // ============ TAB UTAMA: DIREKTORI vs AGENDA ============
-        function switchMainTab(tab) {
-            const panelDirektori = document.getElementById('tabPanelDirektori');
-            const panelAgenda = document.getElementById('tabPanelAgenda');
-            const btnDirektori = document.getElementById('tabBtnDirektori');
-            const btnAgenda = document.getElementById('tabBtnAgenda');
-
-            const activeCls = ['bg-white', 'text-indigo-600', 'border-gray-200'];
-            const inactiveCls = ['text-gray-500', 'border-transparent', 'hover:bg-gray-100'];
-
-            if (tab === 'agenda') {
-                panelAgenda.classList.remove('hidden');
-                panelDirektori.classList.add('hidden');
-                btnAgenda.classList.add(...activeCls);
-                btnAgenda.classList.remove(...inactiveCls);
-                btnDirektori.classList.remove(...activeCls);
-                btnDirektori.classList.add(...inactiveCls);
-                renderAgendaCalendar();
-            } else {
-                panelDirektori.classList.remove('hidden');
-                panelAgenda.classList.add('hidden');
-                btnDirektori.classList.add(...activeCls);
-                btnDirektori.classList.remove(...inactiveCls);
-                btnAgenda.classList.remove(...activeCls);
-                btnAgenda.classList.add(...inactiveCls);
-            }
-        }
 
         // ============ MATRIKS AGENDA PENGUJIAN MANDIRI ============
         let agendaViewDate = new Date();
@@ -953,7 +594,7 @@
                     : '';
                 return `<div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-2 text-xs">
                     <div>
-                        <button type="button" onclick="openPesertaDetail('${p.id_x}')" class="font-semibold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer">${escapeHtml(bio.bioNama)}</button>
+                        <span class="font-semibold text-gray-800">${escapeHtml(bio.bioNama)}</span>
                         <span class="${s.cls} ml-2 font-medium">(${s.text})</span>
                     </div>
                     ${btnValidasi}
