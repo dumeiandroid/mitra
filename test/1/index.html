@@ -553,9 +553,9 @@ const CONFIG = {
   // ── 1. PAKET ──────────────────────────────────────────────
   paket: {
     // Paket aktif untuk file index.html ini (harus cocok dgn x_01 di tabel alat_tes)
-    aktif: 'ssc',
+    aktif: 'mitra',
     // Paket yang langsung aktif tanpa perlu admin klik "aktifkan" dulu
-    autoAktifList: ['asmara', 'potensi', 'karakter', 'karir', 'ssc'],
+    autoAktifList: ['asmara', 'potensi', 'karakter', 'karir', 'mitra'],
   },
 
   // ── 2. FRAGMENT (form biodata & layar penutup) ───────────────
@@ -700,7 +700,7 @@ const IS_AUTO_AKTIF = PAKET_AUTO_AKTIF.includes(AUTO_PAKET.toLowerCase());
 // dan lsClearPaketIni() sebagai ganti localStorage.clear() total.
 // ════════════════════════════════════════════════════════════
 // Nama file (path lengkap tanpa query/hash) ikut jadi pembeda, supaya file HASIL
-// COPY dengan CONFIG.paket.aktif yang sama (mis. ssc.html vs ssc2.html) TETAP
+// COPY dengan CONFIG.paket.aktif yang sama (mis. mitra.html vs ssc2.html) TETAP
 // dianggap sesi berbeda — bukan cuma dibedakan lewat nama paket saja.
 const _NS_FILE = window.location.pathname;
 const NS_SESI = '__' + AUTO_PAKET + '__' + _NS_FILE;
