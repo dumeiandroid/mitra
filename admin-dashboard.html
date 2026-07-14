@@ -109,33 +109,54 @@
                     </div>
                     <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600 hidden sm:block"><i class="fa-solid fa-receipt text-xl"></i></div>
                 </div>
+                <div onclick="openMetricDetail('menungguAktivasi')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-amber-300 transition">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menunggu Aktivasi</p>
+                        <p class="text-2xl font-bold text-amber-600 mt-1"><span id="mMenungguAktivasi">0</span> <span class="text-xs font-normal text-gray-500">Mitra</span></p>
+                    </div>
+                    <div class="p-3 bg-amber-50 rounded-lg text-amber-600 hidden sm:block"><i class="fa-solid fa-user-clock text-xl"></i></div>
+                </div>
+                <div onclick="openMetricDetail('pesananKupon')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-violet-300 transition">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pemesanan Kupon</p>
+                        <p class="text-2xl font-bold text-violet-600 mt-1"><span id="mPesananKupon">0</span> <span class="text-xs font-normal text-gray-500">Pesanan</span></p>
+                    </div>
+                    <div class="p-3 bg-violet-50 rounded-lg text-violet-600 hidden sm:block"><i class="fa-solid fa-cart-shopping text-xl"></i></div>
+                </div>
             </section>
 
             <div class="flex items-center gap-1 mb-4 border-b border-gray-200">
-                <button id="tabBtnDirektori" onclick="switchMainTab('direktori')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 bg-white text-indigo-600 flex items-center gap-2">
+                <button id="tabBtnStatus" onclick="switchMainTab('status')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-gray-200 bg-white text-indigo-600 flex items-center gap-2">
+                    <i class="fa-solid fa-user-check"></i> Pemantauan Status Peserta
+                </button>
+                <button id="tabBtnDirektori" onclick="switchMainTab('direktori')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-transparent text-gray-500 hover:bg-gray-100 flex items-center gap-2">
                     <i class="fa-solid fa-folder-tree"></i> Direktori Data Kemitraan
                 </button>
                 <button id="tabBtnAgenda" onclick="switchMainTab('agenda')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-transparent text-gray-500 hover:bg-gray-100 flex items-center gap-2">
                     <i class="fa-solid fa-calendar-days"></i> Matriks Agenda Pengujian
                 </button>
-                <button id="tabBtnStatus" onclick="switchMainTab('status')" class="tab-btn-main px-4 py-2.5 text-sm font-semibold rounded-t-lg border border-b-0 border-transparent text-gray-500 hover:bg-gray-100 flex items-center gap-2">
-                    <i class="fa-solid fa-user-check"></i> Pemantauan Status Peserta
-                </button>
             </div>
 
-            <div id="tabPanelStatus" class="hidden">
-                <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                    <div onclick="openMetricDetail('peserta_berjalan')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-amber-300 transition">
+            <div id="tabPanelStatus">
+                <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div onclick="openMetricDetail('peserta_belum')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-gray-300 transition">
                         <div>
-                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Peserta Berjalan</p>
-                            <p class="text-2xl font-bold text-amber-600 mt-1"><span id="statGlobalBerjalan">0</span> <span class="text-xs font-normal text-gray-500">Orang</span></p>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Belum Tes</p>
+                            <p class="text-2xl font-bold text-gray-600 mt-1"><span id="statGlobalBelum">0</span> <span class="text-xs font-normal text-gray-500">Orang</span></p>
+                        </div>
+                        <div class="p-3 bg-gray-100 rounded-lg text-gray-500"><i class="fa-solid fa-hourglass-start text-xl"></i></div>
+                    </div>
+                    <div onclick="openMetricDetail('peserta_sedang')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-amber-300 transition">
+                        <div>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Sedang Tes</p>
+                            <p class="text-2xl font-bold text-amber-600 mt-1"><span id="statGlobalSedang">0</span> <span class="text-xs font-normal text-gray-500">Orang</span></p>
                         </div>
                         <div class="p-3 bg-amber-50 rounded-lg text-amber-600"><i class="fa-solid fa-spinner text-xl"></i></div>
                     </div>
                     <div onclick="openMetricDetail('antrean')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-blue-300 transition">
                         <div>
-                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Validasi Psikolog</p>
-                            <p class="text-2xl font-bold text-blue-600 mt-1"><span id="statGlobalValidasi">0</span> <span class="text-xs font-normal text-gray-500">Berkas</span></p>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Selesai Tes</p>
+                            <p class="text-2xl font-bold text-blue-600 mt-1"><span id="statGlobalValidasi">0</span> <span class="text-xs font-normal text-gray-500">Menunggu Validasi</span></p>
                         </div>
                         <div class="p-3 bg-blue-50 rounded-lg text-blue-600"><i class="fa-solid fa-user-doctor text-xl"></i></div>
                     </div>
@@ -176,7 +197,7 @@
             </div>
             </div>
 
-            <div id="tabPanelDirektori">
+            <div id="tabPanelDirektori" class="hidden">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -484,11 +505,15 @@
             document.getElementById('mAntrean').textContent = pesertaData.filter(p => pesertaBio(p).status_tes === 'selesai_ujian').length;
             const totalKupon = mitraData.reduce((sum, m) => sum + (parseInt(m.x_06) || 0), 0);
             document.getElementById('mKupon').textContent = totalKupon;
+            document.getElementById('mMenungguAktivasi').textContent = mitraData.filter(m => m.x_04 === 'pending').length;
+            document.getElementById('mPesananKupon').textContent = mitraData.reduce((sum, m) => sum + mitraPesanan(m).filter(o => o.status === 'menunggu_approval').length, 0);
 
-            const elBerjalan = document.getElementById('statGlobalBerjalan');
+            const elBelum = document.getElementById('statGlobalBelum');
+            const elSedang = document.getElementById('statGlobalSedang');
             const elValidasi = document.getElementById('statGlobalValidasi');
             const elTerkirim = document.getElementById('statGlobalTerkirim');
-            if (elBerjalan) elBerjalan.textContent = pesertaData.filter(p => ['belum_tes', 'sedang_tes'].includes(pesertaBio(p).status_tes)).length;
+            if (elBelum) elBelum.textContent = pesertaData.filter(p => (pesertaBio(p).status_tes || 'belum_tes') === 'belum_tes').length;
+            if (elSedang) elSedang.textContent = pesertaData.filter(p => pesertaBio(p).status_tes === 'sedang_tes').length;
             if (elValidasi) elValidasi.textContent = pesertaData.filter(p => pesertaBio(p).status_tes === 'selesai_ujian').length;
             if (elTerkirim) elTerkirim.textContent = pesertaData.filter(p => pesertaBio(p).status_tes === 'selesai_terkirim').length;
         }
@@ -577,13 +602,13 @@
                 emptyText: 'Tidak ada berkas yang perlu divalidasi.',
                 footer: (n) => `${n} berkas menunggu validasi admin`
             },
-            peserta_berjalan: {
-                title: 'Detail Peserta Berjalan',
-                icon: 'fa-spinner',
-                iconCls: 'bg-amber-50 text-amber-600',
+            peserta_belum: {
+                title: 'Detail Peserta Belum Tes',
+                icon: 'fa-hourglass-start',
+                iconCls: 'bg-gray-100 text-gray-500',
                 columns: ['Nama Peserta', 'Nama Mitra', 'Status', 'Tanggal Daftar'],
                 getRows() {
-                    return pesertaData.filter(p => ['belum_tes', 'sedang_tes'].includes(pesertaBio(p).status_tes)).map(p => {
+                    return pesertaData.filter(p => (pesertaBio(p).status_tes || 'belum_tes') === 'belum_tes').map(p => {
                         const bio = pesertaBio(p);
                         const s = statusLabel(bio.status_tes);
                         const namaMitra = mitraNamaById(p.x_18);
@@ -602,8 +627,36 @@
                         };
                     });
                 },
-                emptyText: 'Tidak ada peserta yang sedang berjalan.',
-                footer: (n) => `${n} peserta belum/sedang tes`
+                emptyText: 'Tidak ada peserta yang belum tes.',
+                footer: (n) => `${n} peserta belum tes`
+            },
+            peserta_sedang: {
+                title: 'Detail Peserta Sedang Tes',
+                icon: 'fa-spinner',
+                iconCls: 'bg-amber-50 text-amber-600',
+                columns: ['Nama Peserta', 'Nama Mitra', 'Status', 'Tanggal Daftar'],
+                getRows() {
+                    return pesertaData.filter(p => pesertaBio(p).status_tes === 'sedang_tes').map(p => {
+                        const bio = pesertaBio(p);
+                        const s = statusLabel(bio.status_tes);
+                        const namaMitra = mitraNamaById(p.x_18);
+                        const tgl = bio.tanggal_daftar ? new Date(bio.tanggal_daftar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                        return {
+                            id: p.id_x,
+                            onclick: `toggleModal('metricDetailModal'); openPesertaDetail('${p.id_x}')`,
+                            searchText: `${bio.bioNama || ''} ${namaMitra}`,
+                            mitraName: namaMitra || '',
+                            cells: [
+                                `<span class="font-semibold text-gray-900">${escapeHtml(bio.bioNama)}</span>`,
+                                escapeHtml(namaMitra),
+                                `<span class="${s.cls} font-semibold">${s.text}</span>`,
+                                tgl
+                            ]
+                        };
+                    });
+                },
+                emptyText: 'Tidak ada peserta yang sedang tes.',
+                footer: (n) => `${n} peserta sedang tes`
             },
             laporan_terkirim: {
                 title: 'Detail Laporan Terkirim',
@@ -658,6 +711,62 @@
                 },
                 emptyText: 'Belum ada data kupon.',
                 footer: (n) => `${n} mitra terdaftar`
+            },
+            menungguAktivasi: {
+                title: 'Detail Mitra Menunggu Aktivasi',
+                icon: 'fa-user-clock',
+                iconCls: 'bg-amber-50 text-amber-600',
+                columns: ['Nama Mitra', 'No. WhatsApp', 'Tanggal Daftar', 'Status Akun'],
+                getRows() {
+                    return mitraData.filter(m => m.x_04 === 'pending').map(m => {
+                        const detail = mitraDetail(m);
+                        const tgl = detail.tanggal_daftar ? new Date(detail.tanggal_daftar).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                        return {
+                            id: m.id_x,
+                            onclick: `toggleModal('metricDetailModal'); openManage('${m.id_x}')`,
+                            searchText: `${detail.nama_lengkap || ''} ${m.x_01 || ''}`,
+                            mitraName: detail.nama_lengkap || m.x_01 || '',
+                            cells: [
+                                `<span class="font-semibold text-gray-900">${escapeHtml(detail.nama_lengkap || m.x_01)}</span><div class="text-[10px] text-gray-400">ID: #${m.id_x}</div>`,
+                                escapeHtml(detail.whatsapp || '-'),
+                                tgl,
+                                `<span class="text-amber-600 font-semibold">Menunggu Aktivasi</span>`
+                            ]
+                        };
+                    });
+                },
+                emptyText: 'Tidak ada mitra yang menunggu aktivasi.',
+                footer: (n) => `${n} mitra menunggu aktivasi — klik baris untuk membuka & mengaktifkan`
+            },
+            pesananKupon: {
+                title: 'Detail Pemesanan Kupon Menunggu Persetujuan',
+                icon: 'fa-cart-shopping',
+                iconCls: 'bg-violet-50 text-violet-600',
+                columns: ['Nama Mitra', 'Paket Kupon', 'Harga', 'Tanggal Pesan'],
+                getRows() {
+                    const rows = [];
+                    mitraData.forEach(m => {
+                        const detail = mitraDetail(m);
+                        const namaMitra = detail.nama_lengkap || m.x_01 || '';
+                        mitraPesanan(m).filter(o => o.status === 'menunggu_approval').forEach(o => {
+                            rows.push({
+                                id: `${m.id_x}_${o.id}`,
+                                onclick: `toggleModal('metricDetailModal'); openManage('${m.id_x}')`,
+                                searchText: `${namaMitra} ${o.nama_paket || ''}`,
+                                mitraName: namaMitra,
+                                cells: [
+                                    `<span class="font-semibold text-gray-900">${escapeHtml(namaMitra)}</span><div class="text-[10px] text-gray-400">ID: #${m.id_x}</div>`,
+                                    `${escapeHtml(o.nama_paket || '-')} <span class="text-gray-400">(${o.jumlah_kupon || 0} kupon)</span>`,
+                                    formatRupiah(o.harga),
+                                    o.tanggal_pesan ? new Date(o.tanggal_pesan).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'
+                                ]
+                            });
+                        });
+                    });
+                    return rows;
+                },
+                emptyText: 'Tidak ada pesanan kupon yang menunggu persetujuan.',
+                footer: (n) => `${n} pesanan menunggu persetujuan — klik baris untuk membuka & memproses`
             }
         };
 
