@@ -480,21 +480,21 @@ table.dataTable tbody tr:nth-child(even) { background: #fafbff; }
                     </div>
                     <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600 hidden sm:block"><i class="fa-solid fa-ticket text-xl"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openStatDetail('berjalan')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-amber-300 transition">
                     <div>
                         <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Peserta Berjalan</p>
                         <p class="text-2xl font-bold text-amber-600 mt-1"><span id="statBerjalan">0</span> <span class="text-xs font-normal text-gray-500">Orang</span></p>
                     </div>
                     <div class="p-3 bg-amber-50 rounded-lg text-amber-600 hidden sm:block"><i class="fa-solid fa-spinner text-xl"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openStatDetail('validasi')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-blue-300 transition">
                     <div>
                         <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Validasi Psikolog</p>
                         <p class="text-2xl font-bold text-blue-600 mt-1"><span id="statValidasi">0</span> <span class="text-xs font-normal text-gray-500">Berkas</span></p>
                     </div>
                     <div class="p-3 bg-blue-50 rounded-lg text-blue-600 hidden sm:block"><i class="fa-solid fa-user-doctor text-xl"></i></div>
                 </div>
-                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div onclick="openStatDetail('terkirim')" class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between cursor-pointer hover:shadow-md hover:border-emerald-300 transition">
                     <div>
                         <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Laporan Terkirim</p>
                         <p class="text-2xl font-bold text-emerald-600 mt-1"><span id="statTerkirim">0</span> <span class="text-xs font-normal text-gray-500">Sukses</span></p>
@@ -1726,6 +1726,39 @@ function renderInstruksiDetail(data, key) {
         </div>
     </div>
 
+    <!-- MODAL: DETAIL KARTU STATISTIK (Peserta Berjalan / Validasi Psikolog / Laporan Terkirim) -->
+    <div id="statDetailModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="statDetailIconWrap" class="p-2.5 rounded-lg"><i id="statDetailIcon" class="fa-solid text-lg"></i></div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base" id="statDetailTitle">Detail</h3>
+                        <p class="text-[11px] text-gray-500 mt-0.5" id="statDetailSub">Klik baris untuk mengubah jadwal / menyalin tautan.</p>
+                    </div>
+                </div>
+                <button onclick="toggleModal('statDetailModal')" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-5 border-b border-gray-200">
+                <input id="statDetailSearch" type="text" placeholder="Cari nama peserta..." oninput="renderStatDetailTable()" class="border border-gray-300 rounded-lg px-3 py-1.5 text-xs w-full sm:w-72 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="overflow-auto flex-1">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-gray-50 text-[11px] text-gray-500 uppercase tracking-wider sticky top-0">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">Nama Peserta</th>
+                            <th class="py-3 px-4 font-semibold">Status</th>
+                            <th class="py-3 px-4 font-semibold">Tanggal Tes</th>
+                            <th class="py-3 px-4 font-semibold text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statDetailBody" class="divide-y divide-gray-100"></tbody>
+                </table>
+            </div>
+            <div class="p-3 border-t border-gray-200 bg-gray-50 text-[11px] text-gray-500" id="statDetailFooter"></div>
+        </div>
+    </div>
+
     <!-- MODAL: DETAIL AGENDA HARIAN -->
     <div id="agendaDayModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-xl shadow-xl border border-gray-200 max-w-md w-full max-h-[80vh] flex flex-col overflow-hidden">
@@ -2062,6 +2095,82 @@ function renderInstruksiDetail(data, key) {
             const d = document.createElement('div');
             d.textContent = str || '';
             return d.innerHTML;
+        }
+
+        // ============ POPUP DETAIL KARTU STATISTIK (klik kartu di atas tabel peserta) ============
+        const STAT_CONFIG = {
+            berjalan: {
+                title: 'Detail Peserta Berjalan',
+                icon: 'fa-spinner',
+                iconCls: 'bg-amber-50 text-amber-600',
+                filter: p => ['belum_tes', 'sedang_tes'].includes(pesertaBio(p).status_tes),
+                emptyText: 'Tidak ada peserta yang sedang berjalan.'
+            },
+            validasi: {
+                title: 'Detail Menunggu Validasi Psikolog',
+                icon: 'fa-user-doctor',
+                iconCls: 'bg-blue-50 text-blue-600',
+                filter: p => pesertaBio(p).status_tes === 'selesai_ujian',
+                emptyText: 'Tidak ada berkas yang sedang divalidasi.'
+            },
+            terkirim: {
+                title: 'Detail Laporan Terkirim',
+                icon: 'fa-circle-check',
+                iconCls: 'bg-emerald-50 text-emerald-600',
+                filter: p => pesertaBio(p).status_tes === 'selesai_terkirim',
+                emptyText: 'Belum ada laporan yang terkirim.'
+            }
+        };
+
+        let activeStatType = null;
+
+        function openStatDetail(type) {
+            const cfg = STAT_CONFIG[type];
+            if (!cfg) return;
+            activeStatType = type;
+
+            document.getElementById('statDetailTitle').textContent = cfg.title;
+            const iconWrap = document.getElementById('statDetailIconWrap');
+            iconWrap.className = 'p-2.5 rounded-lg ' + cfg.iconCls;
+            document.getElementById('statDetailIcon').className = 'fa-solid ' + cfg.icon + ' text-lg';
+            document.getElementById('statDetailSearch').value = '';
+
+            renderStatDetailTable();
+            toggleModal('statDetailModal');
+        }
+
+        function renderStatDetailTable() {
+            const cfg = STAT_CONFIG[activeStatType];
+            if (!cfg) return;
+            const search = (document.getElementById('statDetailSearch').value || '').toLowerCase();
+
+            const allRows = pesertaData.filter(cfg.filter);
+            let rows = allRows;
+            if (search) rows = rows.filter(p => (pesertaBio(p).bioNama || '').toLowerCase().includes(search));
+
+            const body = document.getElementById('statDetailBody');
+            if (rows.length === 0) {
+                body.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-400 text-sm">${cfg.emptyText}</td></tr>`;
+            } else {
+                body.innerHTML = rows.map(p => {
+                    const bio = pesertaBio(p);
+                    const s = statusLabel(bio.status_tes);
+                    const tglTes = bio.tanggal_tes ? new Date(bio.tanggal_tes + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                    return `<tr class="bg-white hover:bg-slate-50/50">
+                        <td class="py-3 px-4 font-semibold text-gray-800">${escapeHtml(bio.bioNama)}</td>
+                        <td class="py-3 px-4"><span class="px-2 py-0.5 rounded font-medium ${s.cls}">${s.text}</span></td>
+                        <td class="py-3 px-4 text-gray-500">
+                            <span>${tglTes}</span>
+                            <button onclick="toggleModal('statDetailModal'); openEditJadwal('${p.id_x}')" class="ml-1 text-gray-400 hover:text-indigo-600" title="Ubah Jadwal Tes"><i class="fa-solid fa-pen"></i></button>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="copyExamLink('${p.x_01}')" class="text-indigo-600 hover:text-indigo-800 font-semibold"><i class="fa-solid fa-link"></i> Tautan</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+
+            document.getElementById('statDetailFooter').textContent = `Menampilkan ${rows.length} dari ${allRows.length} data`;
         }
 
         function renderStats() {

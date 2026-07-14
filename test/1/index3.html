@@ -1304,27 +1304,7 @@ async function loadAC(){
   }catch(e){console.error('[loadAC]',e);AC=ALL_CONFIG;WTL=[];UT=expand(ALL_CONFIG)}
 }
 
-// Tandai status_tes → 'sedang_tes' begitu peserta benar-benar mulai mengerjakan
-// (dipanggil dari goNext2, titik temu semua alur: login token, resume, lanjut subtes).
-// Hanya menimpa jika status masih 'belum_tes'/kosong — TIDAK PERNAH menimpa mundur
-// status yang sudah lebih maju (sedang_tes/selesai_ujian/selesai_terkirim), supaya
-// tidak bentrok dengan validasi admin yang mungkin sudah mengubah status di dashboard.
-async function tandaiMulaiTes(){
-  try{
-    if(!cu||!cu.id_x)return;
-    let bio={};try{bio=JSON.parse(cu.x_02||'{}')}catch{}
-    if(bio.status_tes&&bio.status_tes!=='belum_tes')return;
-    bio.status_tes='sedang_tes';
-    if(!bio.tanggal_mulai)bio.tanggal_mulai=tsNow();
-    const newBio=JSON.stringify(bio);
-    await aP(cu.id_x,{x_02:newBio});
-    cu.x_02=newBio;
-  }catch(e){console.warn('[tandaiMulaiTes] gagal:',e)}
-}
-
 async function goNext2(){
-  // ── Tandai status_tes = 'sedang_tes' begitu peserta mulai/melanjutkan tes ──
-  await tandaiMulaiTes();
   // ── Cek status logout dari cu (data sudah ada di memori, 0 request) ──
   try{let bio={};try{bio=JSON.parse(cu?.x_02||'{}')}catch{}cekTombolLogout(bio.logout===true);}catch{}
   // ── Periksa dulu sebelum lanjut ke instruksi berikutnya ──
@@ -1409,13 +1389,6 @@ function doneAll(){
         let bioObj={};try{bioObj=JSON.parse(cur3.data.x_02||'{}')}catch{}
         bioObj.nama_file=namaFile();
         bioObj.selesai_semua=tsNow();
-        // Tandai status_tes = 'selesai_ujian' (Menunggu Validasi Psikolog) supaya
-        // otomatis tampil di dashboard mitra/admin tanpa perlu diubah manual.
-        // Tidak menimpa kalau sudah 'selesai_terkirim' (jarang terjadi, tapi jaga-jaga).
-        if(bioObj.status_tes!=='selesai_terkirim'){
-          bioObj.status_tes='selesai_ujian';
-          bioObj.tanggal_selesai=new Date().toISOString();
-        }
         const newBio=JSON.stringify(bioObj);
         await aP(_doneId,{x_02:newBio});
         cu.x_02=newBio;
