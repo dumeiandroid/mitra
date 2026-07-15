@@ -83,8 +83,18 @@
         <div class="lg:w-1/2 p-8 lg:p-16 flex items-center justify-center">
             <div class="max-w-md w-full bg-white p-8 rounded-2xl shadow-sm border border-gray-200" id="formCard">
 
+                <!-- TAB SWITCHER: PENDAFTARAN / LOGIN -->
+                <div id="tabSwitcher" class="flex border-b border-gray-200 mb-6">
+                    <button type="button" id="tabBtnDaftar" onclick="switchFormTab('daftar')" class="flex-1 text-center text-sm font-bold pb-3 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition">
+                        Pendaftaran
+                    </button>
+                    <button type="button" id="tabBtnLogin" onclick="switchFormTab('login')" class="flex-1 text-center text-sm font-bold pb-3 border-b-2 border-indigo-600 text-indigo-600 transition">
+                        Login
+                    </button>
+                </div>
+
                 <!-- FORM STATE -->
-                <div id="formState">
+                <div id="formState" class="hidden">
                     <div class="mb-6">
                         <h3 class="text-xl font-bold text-gray-900">Formulir Pengajuan Mitra</h3>
                         <p class="text-xs text-gray-500 mt-1">Lengkapi data di bawah ini untuk mengaktifkan akun workstation Anda.</p>
@@ -161,7 +171,43 @@
                     </form>
 
                     <div class="mt-6 text-center text-xs text-gray-400">
-                        Sudah memiliki akun kemitraan? <a href="mitra-dashboard.html" class="text-indigo-600 font-semibold hover:underline">Masuk Ke Dashboard</a>
+                        Sudah memiliki akun kemitraan? <a href="javascript:void(0)" onclick="switchFormTab('login')" class="text-indigo-600 font-semibold hover:underline">Login di sini</a>
+                    </div>
+                </div>
+
+                <!-- LOGIN STATE -->
+                <div id="loginState">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">Login Mitra</h3>
+                        <p class="text-xs text-gray-500 mt-1">Masuk menggunakan username dan password akun mitra Anda.</p>
+                    </div>
+
+                    <div id="loginErrorBox" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3 py-2 rounded-lg mb-4"></div>
+
+                    <form id="loginFormIndex" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Username</label>
+                            <input id="lUser" type="text" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition" placeholder="Username akun mitra">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Password</label>
+                            <input id="lPass" type="password" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition" placeholder="Password akun mitra">
+                        </div>
+
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input id="lRemember" type="checkbox" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                            <span class="text-xs text-gray-500">Ingat saya di perangkat ini</span>
+                        </label>
+
+                        <button id="loginBtnIndex" type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-bold py-3 rounded-lg text-sm mt-2 shadow transition duration-200 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-notch fa-spin hidden" id="loginBtnSpinner"></i>
+                            <span id="loginBtnLabel">Masuk ke Dashboard</span>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center text-xs text-gray-400">
+                        Belum punya akun kemitraan? <a href="javascript:void(0)" onclick="switchFormTab('daftar')" class="text-indigo-600 font-semibold hover:underline">Daftar di sini</a>
                     </div>
                 </div>
 
@@ -333,6 +379,83 @@
             box.textContent = msg;
             box.classList.remove('hidden');
         }
+
+        // ============ TAB SWITCHER (Pendaftaran / Login) ============
+        function switchFormTab(tab) {
+            const btnDaftar = document.getElementById('tabBtnDaftar');
+            const btnLogin  = document.getElementById('tabBtnLogin');
+            const panelDaftar = document.getElementById('formState');
+            const panelLogin  = document.getElementById('loginState');
+            const activeCls   = ['border-indigo-600', 'text-indigo-600'];
+            const inactiveCls = ['border-transparent', 'text-gray-400'];
+
+            document.getElementById('errorBox').classList.add('hidden');
+            document.getElementById('loginErrorBox').classList.add('hidden');
+
+            if (tab === 'login') {
+                panelDaftar.classList.add('hidden');
+                panelLogin.classList.remove('hidden');
+                btnLogin.classList.add(...activeCls);
+                btnLogin.classList.remove(...inactiveCls);
+                btnDaftar.classList.add(...inactiveCls);
+                btnDaftar.classList.remove(...activeCls);
+            } else {
+                panelLogin.classList.add('hidden');
+                panelDaftar.classList.remove('hidden');
+                btnDaftar.classList.add(...activeCls);
+                btnDaftar.classList.remove(...inactiveCls);
+                btnLogin.classList.add(...inactiveCls);
+                btnLogin.classList.remove(...activeCls);
+            }
+        }
+
+        // ============ LOGIN MITRA (session key SAMA dengan mitra-dashboard.html) ============
+        // Kunci sesi ini HARUS identik dengan SESSION_KEY di mitra-dashboard.html ('lidanMitraSession')
+        // supaya begitu diarahkan ke sana, dashboard otomatis mendeteksi sesi tersimpan (auto-login).
+        const MITRA_SESSION_KEY = 'lidanMitraSession';
+
+        function showLoginError(msg) {
+            const box = document.getElementById('loginErrorBox');
+            box.textContent = msg;
+            box.classList.remove('hidden');
+        }
+
+        document.getElementById('loginFormIndex').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.getElementById('loginErrorBox').classList.add('hidden');
+
+            const username = document.getElementById('lUser').value.trim();
+            const password = document.getElementById('lPass').value;
+            const remember = document.getElementById('lRemember').checked;
+
+            const btn = document.getElementById('loginBtnIndex');
+            btn.disabled = true;
+            document.getElementById('loginBtnSpinner').classList.remove('hidden');
+            document.getElementById('loginBtnLabel').textContent = 'Memeriksa...';
+
+            try {
+                const res = await apiRequest(TABLE, { query: { x_01_eq: username, x_02_eq: password, limit: 1 } });
+                const rows = res.data || [];
+                if (rows.length === 0) throw new Error('Username atau password salah.');
+
+                const mitra = rows[0];
+                if (remember) {
+                    localStorage.setItem(MITRA_SESSION_KEY, JSON.stringify(mitra));
+                    sessionStorage.removeItem(MITRA_SESSION_KEY);
+                } else {
+                    sessionStorage.setItem(MITRA_SESSION_KEY, JSON.stringify(mitra));
+                    localStorage.removeItem(MITRA_SESSION_KEY);
+                }
+
+                window.location.href = 'mitra-dashboard.html';
+
+            } catch (err) {
+                showLoginError(err.message || 'Terjadi kesalahan saat login.');
+                btn.disabled = false;
+                document.getElementById('loginBtnSpinner').classList.add('hidden');
+                document.getElementById('loginBtnLabel').textContent = 'Masuk ke Dashboard';
+            }
+        });
 
         function copyText(elId) {
             const text = document.getElementById(elId).textContent;
